@@ -25,13 +25,13 @@ assert.equal(cleaner.clean('<foo color="red">'), '<foo>');
 assert.equal(cleaner.clean('foo<!-- bar -->', {'remove-comments': true}), 'foo');
 
 // test that line breaks are added before and after block element tags
-assert.equal(cleaner.clean('foo<div></div>foo', {'pretty': true}), 'foo\n<div>\n</div>\nfoo');
+assert.equal(cleaner.clean('foo<div></div>foo'), 'foo\n<div>\n</div>\nfoo');
 
 // test that line break is added after br element tag
-assert.equal(cleaner.clean('foo<br>foo', {'pretty': true}), 'foo<br>\nfoo');
+assert.equal(cleaner.clean('foo<br>foo'), 'foo<br>\nfoo');
 
 // test that nested tags are indented after block element tags
-assert.equal(cleaner.clean('<div>\nbar</div>', {'pretty': true}), '<div>\n  bar\n</div>');
+assert.equal(cleaner.clean('<div>\nbar</div>'), '<div>\n  bar\n</div>');
 
 // test that output is trimmed
 assert.equal(cleaner.clean(' Foo\n'), 'Foo');
