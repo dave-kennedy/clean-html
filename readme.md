@@ -1,5 +1,7 @@
 ## HTML cleaner and beautifier
 
+[![NPM Stats](https://nodei.co/npm/clean-html.png?downloads=true&downloadRank=true)](https://npmjs.org/packages/clean-html/)
+
 Do you have crappy HTML? I do!
 
 ```html
