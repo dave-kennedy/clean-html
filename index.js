@@ -26,10 +26,8 @@ var iconv = require('iconv-lite'),
             'img'
         ],
         'encoding': 'utf-8',
-        'indent': false,
-        'line-breaks': false,
-        'pretty': false,
-        'remove-comments': true,
+        'pretty': true,
+        'remove-comments': false,
         'tags-to-remove': [
             'font'
         ]
@@ -44,10 +42,8 @@ function setup(opt) {
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
     options['encoding'] = opt['encoding'] || options['encoding'];
-    options['indent'] = opt['indent'] || options['indent'];
-    options['line-breaks'] = opt['line-breaks'] || options['line-breaks'];
     options['pretty'] = opt['pretty'] || options['pretty'];
-    options['remove-comments'] = opt['remove-comments'] || true;
+    options['remove-comments'] = opt['remove-comments'] || options['remove-comments'];
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
     if (opt['add-attr-to-remove']) {
@@ -190,18 +186,11 @@ function clean(data, opt) {
         html = removeComments(html);
     }
 
-    if (!options['line-breaks'] && !options['pretty']) {
-        return html.trim();
+    if (options['pretty']) {
+        html = addLineBreaks(html);
+        html = removeBlankLines(html);
+        html = indent(html);
     }
-
-    html = addLineBreaks(html);
-    html = removeBlankLines(html);
-
-    if (!options['indent'] && !options['pretty']) {
-        return html.trim();
-    }
-
-    html = indent(html);
 
     return html.trim();
 }

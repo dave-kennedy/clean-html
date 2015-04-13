@@ -1,12 +1,6 @@
 var cleaner = require('./index.js'),
     fs = require('fs'),
-    file = process.argv[2],
-    options = {
-        'encoding': 'iso-8859-1',
-        'pretty': true,
-        'add-attr-to-remove': ['class'],
-        'add-tags-to-remove': ['table', 'tr', 'td', 'blockquote'],
-    };
+    file = process.argv[2];
 
 if (!file) {
     return process.stderr.write('no file specified\n');
@@ -17,5 +11,5 @@ fs.readFile(file, function (err, data) {
         return process.stderr.write(err);
     }
 
-    process.stdout.write(cleaner.clean(data, options) + '\n');
+    process.stdout.write(cleaner.clean(data) + '\n');
 });
