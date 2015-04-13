@@ -64,49 +64,49 @@ Sanity restored!
 
 Attributes to remove from markup.
 
-Type: Array
+Type: Array  
 Default: `['align', 'valign', 'bgcolor', 'color', 'width', 'height', 'border', 'cellpadding', 'cellspacing']`
 
 ### block-tags
 
 Block level element tags. Line breaks are added before and after, and nested content is indented. Note: this option has no effect unless pretty print is enabled.
 
-Type: Array
+Type: Array  
 Default: `['div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
 
 ### empty-tags
 
 Empty element tags. Trailing slashes are removed.
 
-Type: Array
+Type: Array  
 Default: `['br', 'hr', 'img']`
 
 ### encoding
 
 Using this option to specify the encoding of the input file will ensure its contents are properly converted to utf-8.
 
-Type: String
+Type: String  
 Default: `utf-8`
 
 ### pretty
 
 Pretty prints the output by adding line breaks and indentation.
 
-Type: Boolean
+Type: Boolean  
 Default: `true`
 
 ### remove-comments
 
 Removes comments.
 
-Type: Boolean
+Type: Boolean  
 Default: `false`
 
 ### tags-to-remove
 
 Tags to remove from markup.
 
-Type: Array
+Type: Array  
 Default: `['font']`
 
 ## Adding values to option lists
@@ -117,26 +117,26 @@ These options are added for your convenience.
 
 Additional attributes to remove from markup.
 
-Type: Array
+Type: Array  
 Default: `null`
 
 ### add-block-tags
 
 Additional block level element tags.
 
-Type: Array
+Type: Array  
 Default: `null`
 
 ### add-empty-tags
 
 Additional empty element tags.
 
-Type; Array
+Type; Array  
 Default: `null`
 
 ### add-tags-to-remove
 
 Additional tags to remove from markup.
 
-Type; Array
+Type; Array  
 Default: `null`
