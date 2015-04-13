@@ -1,0 +1,30 @@
+{
+  "name": "clean-html",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "iconv-lite": "^0.4.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Pajamaman/clean-html.git"
+  },
+  "keywords": [
+    "beautify",
+    "clean",
+    "html",
+    "pretty",
+    "tidy"
+  ],
+  "author": "Pajamaman <Pajamaman@users.noreply.github.com> (http://github.com/Pajamaman)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pajamaman/clean-html/issues"
+  },
+  "homepage": "https://github.com/Pajamaman/clean-html"
+}
