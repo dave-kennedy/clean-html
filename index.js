@@ -1,5 +1,4 @@
-var iconv = require('iconv-lite'),
-    options = {
+var options = {
         'attr-to-remove': [
             'align',
             'valign',
@@ -25,7 +24,6 @@ var iconv = require('iconv-lite'),
             'hr',
             'img'
         ],
-        'encoding': 'utf-8',
         'pretty': true,
         'remove-comments': false,
         'tags-to-remove': [
@@ -41,7 +39,6 @@ function setup(opt) {
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
-    options['encoding'] = opt['encoding'] || options['encoding'];
     options['pretty'] = opt['pretty'] || options['pretty'];
     options['remove-comments'] = opt['remove-comments'] || options['remove-comments'];
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
@@ -165,18 +162,8 @@ function indent(html) {
     });
 }
 
-function clean(data, opt) {
-    if (!data instanceof Buffer) {
-        return process.stderr.write('data must be a buffer\n');
-    }
-
+function clean(html, opt) {
     setup(opt);
-
-    if (options['encoding'] != 'utf-8') {
-        html = iconv.decode(data, options['encoding']);
-    } else {
-        html = data.toString('utf-8');
-    }
 
     html = replaceWhiteSpace(html);
     html = removeExtraSpaces(html);

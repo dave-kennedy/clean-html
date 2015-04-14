@@ -33,7 +33,7 @@ var cleaner = require('clean-html'),
     fs = require('fs'),
     file = process.argv[2];
 
-fs.readFile(file, function (err, data) {
+fs.readFile(file, 'utf-8', function (err, data) {
     process.stdout.write(cleaner.clean(data) + '\n');
 });
 ```
@@ -82,13 +82,6 @@ Empty element tags. Trailing slashes are removed.
 
 Type: Array  
 Default: `['br', 'hr', 'img']`
-
-### encoding
-
-Using this option to specify the encoding of the input file will ensure its contents are properly converted to utf-8.
-
-Type: String  
-Default: `utf-8`
 
 ### pretty
 

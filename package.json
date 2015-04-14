@@ -1,11 +1,9 @@
 {
   "name": "clean-html",
   "version": "1.0.3",
-  "description": "",
+  "description": "HTML cleaner and beautifier",
   "main": "index.js",
-  "dependencies": {
-    "iconv-lite": "^0.4.7"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "node test.js"
