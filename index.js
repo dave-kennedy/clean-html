@@ -19,11 +19,14 @@ var options = {
             'blockquote',
             'hr'
         ],
+        'break-after-br': true,
+        'close-empty-tags': false,
         'empty-tags': [
             'br',
             'hr',
             'img'
         ],
+        'indent': '  ',
         'pretty': true,
         'remove-comments': false,
         'tags-to-remove': [
@@ -38,8 +41,11 @@ function setup(opt) {
 
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
+    options['break-after-br'] = opt['break-after-br'] === false ? false : options['break-after-br'];
+    options['close-empty-tags'] = opt['close-empty-tags'] || options['close-empty-tags'];
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
-    options['pretty'] = opt['pretty'] || options['pretty'];
+    options['indent'] = opt['indent'] || options['indent'];
+    options['pretty'] = opt['pretty'] === false ? false : options['pretty'];
     options['remove-comments'] = opt['remove-comments'] || options['remove-comments'];
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
@@ -68,6 +74,10 @@ function removeExtraSpaces(html) {
     return html.replace(/ {2,}/g, ' ');
 }
 
+function closeEmptyTag(tag) {
+    return tag.replace(/ ?\/?>/, '/>');
+}
+
 function removeTrailingSlash(tag) {
     return tag.replace(/ ?\/>/, '>');
 }
@@ -92,7 +102,11 @@ function cleanTags(html) {
         }
 
         if (options['empty-tags'].indexOf(tagName) > -1) {
-            tag = removeTrailingSlash(tag);
+            if (options['close-empty-tags']) {
+                tag = closeEmptyTag(tag);
+            } else {
+                tag = removeTrailingSlash(tag);
+            }
         }
 
         tag = cleanAttributes(tag);
@@ -111,7 +125,7 @@ function addLineBreaks(html) {
             return '\n' + tag + '\n';
         }
 
-        if (tagName == 'br') {
+        if (tagName == 'br' && options['break-after-br']) {
             return tag + '\n';
         }
 
@@ -127,13 +141,17 @@ function indentLine(line, indentLevel) {
     var indent = '';
 
     for (var i = 0; i < indentLevel; i++) {
-        indent += ' ';
+        indent += options['indent'];
     }
 
     return indent + line;
 }
 
 function indent(html) {
+    if (!options['indent']) {
+        return;
+    }
+
     var indentLevel = 0;
 
     return html.replace(/.*\n/g, function (line) {
@@ -148,11 +166,11 @@ function indent(html) {
 
         if (options['block-tags'].indexOf(tagName) > -1) {
             if (tag.indexOf('</') === 0) {
-                indentLevel -= 2;
+                indentLevel--;
                 line = indentLine(line, indentLevel);
             } else {
                 line = indentLine(line, indentLevel);
-                indentLevel += 2;
+                indentLevel++;
             }
 
             return line;

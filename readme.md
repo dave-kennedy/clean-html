@@ -76,12 +76,33 @@ Block level element tags. Line breaks are added before and after, and nested con
 Type: Array  
 Default: `['div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
 
+### break-after-br
+
+Adds line breaks after br tags. Note: this option has no effect unless pretty print is enabled.
+
+Type: Boolean  
+Default: `true`
+
+### close-empty-tags
+
+If set to true, adds trailing slashes to empty tags. Otherwise removes trailing slashes.
+
+Type: Boolean  
+Default: `false`
+
 ### empty-tags
 
-Empty element tags. Trailing slashes are removed.
+Empty element tags. Used in combination with `close-empty-tags` option.
 
 Type: Array  
 Default: `['br', 'hr', 'img']`
+
+### indent
+
+The string to use for indentation. e.g., a tab character or one or more spaces. A falsy value indicates that the output should not be indented.
+
+Type: String  
+Default: `  `
 
 ### pretty
 
