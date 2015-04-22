@@ -10,6 +10,7 @@ Do you have crappy HTML? I do!
           <td height="31"><b>Currently we have these articles available:</b>
 
         <blockquote>
+            <!-- List articles -->
               <p><a href="foo.html">The History of Foo</a><br />    
                 An <span color="red">informative</span> piece  of <FONT FACE="ARIAL">information</FONT>.</p>
               <p><a href="bar.html">A Horse Walked Into a Bar</a><br/> The bartender said
@@ -46,6 +47,7 @@ Sanity restored!
     <td>
       <b>Currently we have these articles available:</b>
       <blockquote>
+        <!-- List articles -->
         <p>
           <a href="foo.html">The History of Foo</a><br>
           An <span>informative</span> piece of information.
@@ -60,6 +62,32 @@ Sanity restored!
 </table>
 ```
 
+If you like, you can even close the empty tags, lose the comments and get rid of that nasty presentational markup:
+
+```javascript
+var options = {
+    'close-empty-tags': true,
+    'remove-comments': true,
+    'add-tags-to-remove': ['table', 'tr', 'td', 'blockquote']
+};
+
+process.stdout.write(cleaner.clean(data, options) + '\n');
+```
+
+Voila!
+
+```html
+<b>Currently we have these articles available:</b>
+<p>
+  <a href="foo.html">The History of Foo</a><br/>
+  An <span>informative</span> piece of information.
+</p>
+<p>
+  <a href="bar.html">A Horse Walked Into a Bar</a><br/>
+  The bartender said "Why the long face?"
+</p>
+```
+
 ## Options
 
 ### attr-to-remove
@@ -71,14 +99,14 @@ Default: `['align', 'valign', 'bgcolor', 'color', 'width', 'height', 'border', '
 
 ### block-tags
 
-Block level element tags. Line breaks are added before and after, and nested content is indented. Note: this option has no effect unless pretty print is enabled.
+Block level element tags. Line breaks are added before and after, and nested content is indented. Note: this option has no effect unless pretty is set to true.
 
 Type: Array  
 Default: `['div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
 
 ### break-after-br
 
-Adds line breaks after br tags. Note: this option has no effect unless pretty print is enabled.
+Adds line breaks after br tags. Note: this option has no effect unless pretty is set to true.
 
 Type: Boolean  
 Default: `true`
@@ -92,17 +120,17 @@ Default: `false`
 
 ### empty-tags
 
-Empty element tags. Used in combination with `close-empty-tags` option.
+Empty element tags.
 
 Type: Array  
 Default: `['br', 'hr', 'img']`
 
 ### indent
 
-The string to use for indentation. e.g., a tab character or one or more spaces. A falsy value indicates that the output should not be indented.
+The string to use for indentation. e.g., a tab character or one or more spaces. Note: this option has no effect unless pretty is set to true.
 
 Type: String  
-Default: `  `
+Default: `'  '` (two spaces)
 
 ### pretty
 
@@ -147,12 +175,12 @@ Default: `null`
 
 Additional empty element tags.
 
-Type; Array  
+Type: Array  
 Default: `null`
 
 ### add-tags-to-remove
 
 Additional tags to remove from markup.
 
-Type; Array  
+Type: Array  
 Default: `null`

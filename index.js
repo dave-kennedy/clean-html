@@ -1,4 +1,7 @@
-var options = {
+var options = {};
+
+function setup(opt) {
+    options = {
         'attr-to-remove': [
             'align',
             'valign',
@@ -34,19 +37,18 @@ var options = {
         ]
     };
 
-function setup(opt) {
     if (!opt) {
         return;
     }
 
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
-    options['break-after-br'] = opt['break-after-br'] === false ? false : options['break-after-br'];
-    options['close-empty-tags'] = opt['close-empty-tags'] || options['close-empty-tags'];
+    options['break-after-br'] = opt['break-after-br'] === false ? false : true;
+    options['close-empty-tags'] = opt['close-empty-tags'] === true ? true : false;
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
     options['indent'] = opt['indent'] || options['indent'];
-    options['pretty'] = opt['pretty'] === false ? false : options['pretty'];
-    options['remove-comments'] = opt['remove-comments'] || options['remove-comments'];
+    options['pretty'] = opt['pretty'] === false ? false : true;
+    options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
     if (opt['add-attr-to-remove']) {
@@ -148,10 +150,6 @@ function indentLine(line, indentLevel) {
 }
 
 function indent(html) {
-    if (!options['indent']) {
-        return;
-    }
-
     var indentLevel = 0;
 
     return html.replace(/.*\n/g, function (line) {
