@@ -130,7 +130,7 @@ function removeComments(html) {
 }
 
 function removeEmptyParagraphs(html) {
-    return html.replace(/<p( \w+=['"].+?['"])?> ?<\/p>/g, '');
+    return html.replace(/<p( \w+=['"].+?['"])?>\s*<\/p>/g, '');
 }
 
 function addLineBreaks(html) {
