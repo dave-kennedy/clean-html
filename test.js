@@ -29,6 +29,10 @@ assert.equal(cleaner.clean('<foo color="red">'), '<foo>');
 assert.equal(cleaner.clean('foo<!-- bar -->'), 'foo<!-- bar -->');
 assert.equal(cleaner.clean('foo<!-- bar -->', {'remove-comments': true}), 'foo');
 
+// test that empty paragraph tags are removed
+assert.equal(cleaner.clean('<p></p>', {'remove-empty-paras': true}), '');
+assert.equal(cleaner.clean('<p foo="bar"></p>', {'remove-empty-paras': true}), '');
+
 // test that line breaks are added before and after block element tags
 assert.equal(cleaner.clean('foo<div></div>foo'), 'foo\n<div>\n</div>\nfoo');
 assert.equal(cleaner.clean('foo<div></div>foo', {'pretty': false}), 'foo<div></div>foo');

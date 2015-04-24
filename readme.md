@@ -146,6 +146,13 @@ Removes comments.
 Type: Boolean  
 Default: `false`
 
+### remove-empty-paras
+
+Removes empty paragraph tags.
+
+Type: Boolean  
+Default: `false`
+
 ### tags-to-remove
 
 Tags to remove from markup.

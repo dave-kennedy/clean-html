@@ -32,6 +32,7 @@ function setup(opt) {
         'indent': '  ',
         'pretty': true,
         'remove-comments': false,
+        'remove-empty-paras': false,
         'tags-to-remove': [
             'font'
         ]
@@ -49,6 +50,7 @@ function setup(opt) {
     options['indent'] = opt['indent'] || options['indent'];
     options['pretty'] = opt['pretty'] === false ? false : true;
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
+    options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
     if (opt['add-attr-to-remove']) {
@@ -121,6 +123,10 @@ function removeComments(html) {
     return html.replace(/<!--.*?-->/g, '');
 }
 
+function removeEmptyParagraphs(html) {
+    return html.replace(/<p( \w+=['"].+?['"])?> ?<\/p>/g, '');
+}
+
 function addLineBreaks(html) {
     return html.replace(/<\/?(\w+).*?>/g, function (tag, tagName) {
         if (options['block-tags'].indexOf(tagName) > -1) {
@@ -187,6 +193,10 @@ function clean(html, opt) {
 
     if (options['remove-comments']) {
         html = removeComments(html);
+    }
+
+    if (options['remove-empty-paras']) {
+        html = removeEmptyParagraphs(html);
     }
 
     if (options['pretty']) {
