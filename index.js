@@ -35,6 +35,7 @@ function setup(opt) {
             'hr',
             'img'
         ],
+        'fix-end-tags': true,
         'indent': '  ',
         'pretty': true,
         'remove-comments': false,
@@ -53,6 +54,7 @@ function setup(opt) {
     options['break-after-br'] = opt['break-after-br'] === false ? false : true;
     options['close-empty-tags'] = opt['close-empty-tags'] === true ? true : false;
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
+    options['fix-end-tags'] = opt['fix-end-tags'] === false ? false : true;
     options['indent'] = opt['indent'] || options['indent'];
     options['pretty'] = opt['pretty'] === false ? false : true;
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
@@ -103,7 +105,9 @@ function cleanAttributes(tag) {
 }
 
 function cleanTags(html) {
-    return html.replace(/<\/?(\w+).*?>/g, function (tag, tagName) {
+    var openTags = [];
+
+    html = html.replace(/<\/?(\w+).*?>/g, function (tag, tagName) {
         tag = tag.toLowerCase();
         tagName = tagName.toLowerCase();
 
@@ -117,12 +121,41 @@ function cleanTags(html) {
             } else {
                 tag = removeTrailingSlash(tag);
             }
+
+            return cleanAttributes(tag);
         }
 
-        tag = cleanAttributes(tag);
+        if (tag.indexOf('</') == -1) {
+            // open tag
+            openTags.unshift(tagName);
 
-        return tag;
+            return cleanAttributes(tag);
+        }
+
+        if (openTags[0] == tagName) {
+            // close tag
+            openTags.shift();
+
+            return tag;
+        }
+
+        var openTagIndex = openTags.indexOf(tagName);
+
+        if (openTagIndex > -1) {
+            // tags are out of order - close previous tags, then close this tag
+            return '</' + openTags.splice(0, openTagIndex + 1).join('></') + '>';
+        }
+
+        // tag was never opened or was already closed - discard
+        return '';
     });
+
+    if (openTags.length) {
+        // append remaining tags
+        html += '</' + openTags.join('></') + '>';
+    }
+
+    return html;
 }
 
 function removeComments(html) {
@@ -175,12 +208,12 @@ function indent(html) {
             tagName = match[1];
 
         if (options['block-tags'].indexOf(tagName) > -1) {
-            if (tag.indexOf('</') === 0) {
-                indentLevel--;
-                line = indentLine(line, indentLevel);
-            } else {
+            if (tag.indexOf('</') == -1) {
                 line = indentLine(line, indentLevel);
                 indentLevel++;
+            } else {
+                indentLevel--;
+                line = indentLine(line, indentLevel);
             }
 
             return line;

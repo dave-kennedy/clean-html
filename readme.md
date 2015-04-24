@@ -125,6 +125,32 @@ Empty element tags.
 Type: Array  
 Default: `['br', 'hr', 'img']`
 
+### fix-end-tags
+
+Adds end tags where they are missing. For example, this:
+
+```html
+<blockquote>Now Scotch is a real drink for a man.
+```
+
+becomes this:
+
+```html
+<blockquote>Now Scotch is a real drink for a man.</blockquote>
+```
+
+Also fixes end tags that are closed in the wrong order.
+
+```html
+You <b>belong in the <i>circus</b></i>, Spock, not a starship.
+```
+
+becomes this:
+
+```html
+You <b>belong in the <i>circus</i></b>, Spock, not a starship.
+```
+
 ### indent
 
 The string to use for indentation. e.g., a tab character or one or more spaces. Note: this option has no effect unless pretty is set to true.

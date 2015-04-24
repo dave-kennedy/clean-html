@@ -23,7 +23,13 @@ assert.equal(cleaner.clean('<br/>', {'close-empty-tags': true}), '<br/>');
 assert.equal(cleaner.clean('<br>', {'close-empty-tags': true}), '<br/>');
 
 // test that legacy attributes are removed
-assert.equal(cleaner.clean('<foo color="red">'), '<foo>');
+assert.equal(cleaner.clean('<foo color="red">bar</foo>'), '<foo>bar</foo>');
+
+// test that missing end tags are added
+assert.equal(cleaner.clean('<quote>Now Scotch is a real drink for a man.'), '<quote>Now Scotch is a real drink for a man.</quote>');
+
+// test that end tags are closed in the right order
+assert.equal(cleaner.clean('You <b>belong in the <i>circus</b></i>, Spock, not a starship.'), 'You <b>belong in the <i>circus</i></b>, Spock, not a starship.');
 
 // test that comments are removed
 assert.equal(cleaner.clean('foo<!-- bar -->'), 'foo<!-- bar -->');
