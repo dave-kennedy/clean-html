@@ -102,7 +102,7 @@ Default: `['align', 'valign', 'bgcolor', 'color', 'width', 'height', 'border', '
 Block level element tags. Line breaks are added before and after, and nested content is indented. Note: this option has no effect unless pretty is set to true.
 
 Type: Array  
-Default: `['div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
+Default: `['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
 
 ### break-after-br
 
