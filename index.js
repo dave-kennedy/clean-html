@@ -1,46 +1,48 @@
-var options = {};
+var htmlparser = require('htmlparser2'),
+    options = {};
 
 function setup(opt) {
     options = {
         'attr-to-remove': [
             'align',
-            'valign',
             'bgcolor',
-            'color',
-            'width',
-            'height',
             'border',
             'cellpadding',
-            'cellspacing'
+            'cellspacing',
+            'color',
+            'disabled',
+            'height',
+            'target',
+            'valign',
+            'width'
         ],
         'block-tags': [
+            'blockquote',
+            'div',
             'h1',
             'h2',
             'h3',
             'h4',
             'h5',
             'h6',
-            'div',
+            'hr',
             'p',
             'table',
-            'tr',
             'td',
-            'blockquote',
-            'hr'
+            'tr'
         ],
+        'break-around-comments': true,
         'break-after-br': true,
-        'close-empty-tags': false,
         'empty-tags': [
             'br',
             'hr',
             'img'
         ],
-        'fix-end-tags': true,
         'indent': '  ',
-        'pretty': true,
         'remove-comments': false,
         'remove-empty-paras': false,
         'tags-to-remove': [
+            'center',
             'font'
         ]
     };
@@ -51,12 +53,10 @@ function setup(opt) {
 
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
+    options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['break-after-br'] = opt['break-after-br'] === false ? false : true;
-    options['close-empty-tags'] = opt['close-empty-tags'] === true ? true : false;
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
-    options['fix-end-tags'] = opt['fix-end-tags'] === false ? false : true;
     options['indent'] = opt['indent'] || options['indent'];
-    options['pretty'] = opt['pretty'] === false ? false : true;
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
@@ -78,109 +78,98 @@ function setup(opt) {
     }
 }
 
-function replaceWhiteSpace(html) {
-    return html.replace(/\s/g, ' ');
-}
-
-function removeExtraSpaces(html) {
-    return html.replace(/ {2,}/g, ' ');
-}
-
-function closeEmptyTag(tag) {
-    return tag.replace(/ ?\/?>/, '/>');
-}
-
-function removeTrailingSlash(tag) {
-    return tag.replace(/ ?\/>/, '>');
-}
-
-function cleanAttributes(tag) {
-    return tag.replace(/ (\w+)=['"].+?['"]/g, function (attribute, attributeName) {
-        if (options['attr-to-remove'].indexOf(attributeName) > -1) {
-            return '';
-        }
-
-        return attribute;
-    });
-}
-
-function cleanTags(html) {
-    var openTags = [];
-
-    html = html.replace(/<\/?(\w+).*?>/g, function (tag, tagName) {
-        tag = tag.toLowerCase();
-        tagName = tagName.toLowerCase();
-
-        if (options['tags-to-remove'].indexOf(tagName) > -1) {
-            return '';
-        }
-
-        if (options['empty-tags'].indexOf(tagName) > -1) {
-            if (options['close-empty-tags']) {
-                tag = closeEmptyTag(tag);
-            } else {
-                tag = removeTrailingSlash(tag);
-            }
-
-            return cleanAttributes(tag);
-        }
-
-        if (tag.indexOf('</') == -1) {
-            // open tag
-            openTags.unshift(tagName);
-
-            return cleanAttributes(tag);
-        }
-
-        if (openTags[0] == tagName) {
-            // close tag
-            openTags.shift();
-
-            return tag;
-        }
-
-        var openTagIndex = openTags.indexOf(tagName);
-
-        if (openTagIndex > -1) {
-            // tags are out of order - close previous tags, then close this tag
-            return '</' + openTags.splice(0, openTagIndex + 1).join('></') + '>';
-        }
-
-        // tag was never opened or was already closed - discard
-        return '';
-    });
-
-    if (openTags.length) {
-        // append remaining tags
-        html += '</' + openTags.join('></') + '>';
+function isEmpty(node) {
+    if (node.type == 'text' || node.type == 'comment') {
+        return !node.data.trim();
     }
 
-    return html;
+    return !node.children.length || node.children.every(isEmpty);
 }
 
-function removeComments(html) {
-    return html.replace(/<!--.*?-->/g, '');
+function renderText(node) {
+    return node.data.replace(/\s+/g, ' ');
 }
 
-function removeEmptyParagraphs(html) {
-    return html.replace(/<p( \w+=['"].+?['"])?>\s*<\/p>/g, '');
+function renderComment(node) {
+    if (options['remove-comments']) {
+        return '';
+    }
+
+    if (options['break-around-comments']) {
+        return '\n' + '<!--' + node.data + '-->' + '\n';
+    }
+
+    return '<!--' + node.data + '-->';
 }
 
-function addLineBreaks(html) {
-    return html.replace(/<\/?(\w+).*?>/g, function (tag, tagName) {
-        if (options['block-tags'].indexOf(tagName) > -1) {
-            return '\n' + tag + '\n';
+function renderTag(node) {
+    if (options['remove-empty-paras'] && node.name == 'p' && isEmpty(node)) {
+        return '';
+    }
+
+    if (options['tags-to-remove'].indexOf(node.name) > -1) {
+        if (!node.children.length) {
+            return '';
         }
 
-        if (tagName == 'br' && options['break-after-br']) {
-            return tag + '\n';
+        return render(node.children);
+    }
+
+    var openTag = '<' + node.name,
+        closeTag;
+
+    for (var attrib in node.attribs) {
+        if (options['attr-to-remove'].indexOf(attrib) == -1) {
+            openTag += ' ' + attrib + '="' + node.attribs[attrib] + '"';
+        }
+    }
+
+    openTag += '>';
+
+    if (options['empty-tags'].indexOf(node.name) > -1) {
+        if (options['break-after-br'] && node.name == 'br') {
+            return openTag + '\n';
         }
 
-        return tag;
+        return openTag;
+    }
+
+    closeTag = '</' + node.name + '>';
+
+    if (options['block-tags'].indexOf(node.name) > -1) {
+        openTag = '\n' + openTag + '\n';
+        closeTag = '\n' + closeTag + '\n';
+    }
+
+    if (!node.children.length) {
+        return openTag + closeTag;
+    }
+
+    return openTag + render(node.children) + closeTag;
+}
+
+function render(nodes) {
+    var html = '';
+
+    nodes.forEach(function (node) {
+        if (node.type == 'root') {
+            html += render(node.children);
+            return;
+        }
+
+        if (node.type == 'text') {
+            html += renderText(node);
+            return;
+        }
+
+        if (node.type == 'comment') {
+            html += renderComment(node);
+            return;
+        }
+
+        html += renderTag(node);
     });
-}
 
-function removeBlankLines(html) {
     return html.replace(/\s{2,}/g, '\n');
 }
 
@@ -223,28 +212,28 @@ function indent(html) {
     });
 }
 
-function clean(html, opt) {
+function clean(html, opt, callback) {
+    if (typeof opt == 'function') {
+        callback = opt;
+        opt = null;
+    }
+
     setup(opt);
 
-    html = replaceWhiteSpace(html);
-    html = removeExtraSpaces(html);
-    html = cleanTags(html);
+    var handler = new htmlparser.DomHandler(function (err, dom) {
+        if (err) {
+            throw err;
+        }
 
-    if (options['remove-comments']) {
-        html = removeComments(html);
-    }
+        var html = render(dom);
+        html = indent(html).trim();
 
-    if (options['remove-empty-paras']) {
-        html = removeEmptyParagraphs(html);
-    }
+        callback(html);
+    });
 
-    if (options['pretty']) {
-        html = addLineBreaks(html);
-        html = removeBlankLines(html);
-        html = indent(html);
-    }
-
-    return html.trim();
+    var parser = new htmlparser.Parser(handler);
+    parser.write(html);
+    parser.done();
 }
 
 module.exports = {

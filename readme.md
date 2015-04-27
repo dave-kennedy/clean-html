@@ -35,7 +35,9 @@ var cleaner = require('clean-html'),
     file = process.argv[2];
 
 fs.readFile(file, 'utf-8', function (err, data) {
-    process.stdout.write(cleaner.clean(data) + '\n');
+    cleaner.clean(data, function (html) {
+        console.log(html);
+    });
 });
 ```
 
@@ -62,32 +64,6 @@ Sanity restored!
 </table>
 ```
 
-If you like, you can even close the empty tags, lose the comments and get rid of that nasty presentational markup:
-
-```javascript
-var options = {
-    'close-empty-tags': true,
-    'remove-comments': true,
-    'add-tags-to-remove': ['table', 'tr', 'td', 'blockquote']
-};
-
-process.stdout.write(cleaner.clean(data, options) + '\n');
-```
-
-Voila!
-
-```html
-<b>Currently we have these articles available:</b>
-<p>
-  <a href="foo.html">The History of Foo</a><br/>
-  An <span>informative</span> piece of information.
-</p>
-<p>
-  <a href="bar.html">A Horse Walked Into a Bar</a><br/>
-  The bartender said "Why the long face?"
-</p>
-```
-
 ## Options
 
 ### attr-to-remove
@@ -95,28 +71,28 @@ Voila!
 Attributes to remove from markup.
 
 Type: Array  
-Default: `['align', 'valign', 'bgcolor', 'color', 'width', 'height', 'border', 'cellpadding', 'cellspacing']`
+Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'disabled', 'height', 'target', 'valign', 'width']`
 
 ### block-tags
 
-Block level element tags. Line breaks are added before and after, and nested content is indented. Note: this option has no effect unless pretty is set to true.
+Block level element tags. Line breaks are added before and after, and nested content is indented.
 
 Type: Array  
-Default: `['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p', 'table', 'tr', 'td', 'blockquote', 'hr']`
+Default: `['blockquote', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'table', 'td', 'tr']`
 
-### break-after-br
+### break-around-comments
 
-Adds line breaks after br tags. Note: this option has no effect unless pretty is set to true.
+Adds line breaks before and after comments.
 
 Type: Boolean  
 Default: `true`
 
-### close-empty-tags
+### break-after-br
 
-If set to true, adds trailing slashes to empty tags. Otherwise removes trailing slashes.
+Adds line breaks after br tags.
 
 Type: Boolean  
-Default: `false`
+Default: `true`
 
 ### empty-tags
 
@@ -125,45 +101,12 @@ Empty element tags.
 Type: Array  
 Default: `['br', 'hr', 'img']`
 
-### fix-end-tags
-
-Adds end tags where they are missing. For example, this:
-
-```html
-<blockquote>Now Scotch is a real drink for a man.
-```
-
-becomes this:
-
-```html
-<blockquote>Now Scotch is a real drink for a man.</blockquote>
-```
-
-Also fixes end tags that are closed in the wrong order.
-
-```html
-You <b>belong in the <i>circus</b></i>, Spock, not a starship.
-```
-
-becomes this:
-
-```html
-You <b>belong in the <i>circus</i></b>, Spock, not a starship.
-```
-
 ### indent
 
-The string to use for indentation. e.g., a tab character or one or more spaces. Note: this option has no effect unless pretty is set to true.
+The string to use for indentation. e.g., a tab character or one or more spaces.
 
 Type: String  
 Default: `'  '` (two spaces)
-
-### pretty
-
-Pretty prints the output by adding line breaks and indentation.
-
-Type: Boolean  
-Default: `true`
 
 ### remove-comments
 
@@ -184,7 +127,7 @@ Default: `false`
 Tags to remove from markup.
 
 Type: Array  
-Default: `['font']`
+Default: `['center', 'font']`
 
 ## Adding values to option lists
 

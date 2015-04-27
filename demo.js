@@ -3,13 +3,15 @@ var cleaner = require('./index.js'),
     file = process.argv[2];
 
 if (!file) {
-    return process.stderr.write('no file specified\n');
+    throw 'no file specified\n';
 }
 
 fs.readFile(file, 'utf-8', function (err, data) {
     if (err) {
-        return process.stderr.write(err);
+        throw err;
     }
 
-    process.stdout.write(cleaner.clean(data) + '\n');
+    cleaner.clean(data, function (html) {
+        console.log(html);
+    });
 });

@@ -2,60 +2,79 @@ var assert = require('assert'),
     cleaner = require('./index.js');
 
 // test that text is unchanged
-assert.equal(cleaner.clean('Foo Bar'), 'Foo Bar');
+cleaner.clean('Foo Bar', function (html) {
+    assert.equal(html, 'Foo Bar');
+});
 
 // test that extra whitespace is removed
-assert.equal(cleaner.clean('Foo  Bar'), 'Foo Bar');
-assert.equal(cleaner.clean('Foo\nBar'), 'Foo Bar');
-
-// test that uppercase tags and attributes are lowercased
-assert.equal(cleaner.clean('<FOO BAR="QUX">Bam</FOO>'), '<foo bar="qux">Bam</foo>');
-
-// test that deprecated tags are removed
-assert.equal(cleaner.clean('foo <font="arial">bar</font>'), 'foo bar');
-
-// test that trailing slash is removed from empty element tag
-assert.equal(cleaner.clean('<br />'), '<br>');
-assert.equal(cleaner.clean('<br/>'), '<br>');
-assert.equal(cleaner.clean('<br>'), '<br>');
-assert.equal(cleaner.clean('<br />', {'close-empty-tags': true}), '<br/>');
-assert.equal(cleaner.clean('<br/>', {'close-empty-tags': true}), '<br/>');
-assert.equal(cleaner.clean('<br>', {'close-empty-tags': true}), '<br/>');
-
-// test that legacy attributes are removed
-assert.equal(cleaner.clean('<foo color="red">bar</foo>'), '<foo>bar</foo>');
-
-// test that missing end tags are added
-assert.equal(cleaner.clean('<quote>Now Scotch is a real drink for a man.'), '<quote>Now Scotch is a real drink for a man.</quote>');
-
-// test that end tags are closed in the right order
-assert.equal(cleaner.clean('You <b>belong in the <i>circus</b></i>, Spock, not a starship.'), 'You <b>belong in the <i>circus</i></b>, Spock, not a starship.');
+cleaner.clean('Foo  Bar', function (html) {
+    assert.equal(html, 'Foo Bar');
+});
+cleaner.clean('Foo\nBar', function (html) {
+    assert.equal(html, 'Foo Bar');
+});
 
 // test that comments are removed
-assert.equal(cleaner.clean('foo<!-- bar -->'), 'foo<!-- bar -->');
-assert.equal(cleaner.clean('foo<!-- bar -->', {'remove-comments': true}), 'foo');
+cleaner.clean('<!-- foo -->', function (html) {
+    assert.equal(html, '<!-- foo -->');
+});
+cleaner.clean('<!-- foo -->', {'remove-comments': true}, function (html) {
+    assert.equal(html, '');
+});
+
+// test that lines breaks are added before and after comments
+cleaner.clean('foo<!-- bar -->qux', function (html) {
+    assert.equal(html, 'foo\n<!-- bar -->\nqux');
+});
+cleaner.clean('foo<!-- bar -->qux', {'break-around-comments': false}, function (html) {
+    assert.equal(html, 'foo<!-- bar -->qux');
+});
 
 // test that empty paragraph tags are removed
-assert.equal(cleaner.clean('<p></p>', {'remove-empty-paras': true}), '');
-assert.equal(cleaner.clean('<p>\n</p>', {'remove-empty-paras': true}), '');
-assert.equal(cleaner.clean('<p foo="bar"></p>', {'remove-empty-paras': true}), '');
+cleaner.clean('<p>\n</p>', function (html) {
+    assert.equal(html, '<p>\n</p>');
+});
+cleaner.clean('<p>\n</p>', {'remove-empty-paras': true}, function (html) {
+    assert.equal(html, '');
+});
+
+// test that deprecated tags are removed
+cleaner.clean('<font face="arial">foo</font>', function (html) {
+    assert.equal(html, 'foo');
+});
+
+// test that legacy attributes are removed
+cleaner.clean('<span color="red">foo</span>', function (html) {
+    assert.equal(html, '<span>foo</span>');
+});
+
+// test that line break is added after br tag
+cleaner.clean('foo<br>bar', function (html) {
+    assert.equal(html, 'foo<br>\nbar');
+});
+cleaner.clean('foo<br>bar', {'break-after-br': false}, function (html) {
+    assert.equal(html, 'foo<br>bar');
+});
 
 // test that line breaks are added before and after block element tags
-assert.equal(cleaner.clean('foo<div></div>foo'), 'foo\n<div>\n</div>\nfoo');
-assert.equal(cleaner.clean('foo<div></div>foo', {'pretty': false}), 'foo<div></div>foo');
-
-// test that line break is added after br element tag
-assert.equal(cleaner.clean('foo<br>foo'), 'foo<br>\nfoo');
-assert.equal(cleaner.clean('foo<br>foo', {'break-after-br': false}), 'foo<br>foo');
-assert.equal(cleaner.clean('foo<br>foo', {'pretty': false}), 'foo<br>foo');
+cleaner.clean('foo<div></div>bar', function (html) {
+    assert.equal(html, 'foo\n<div>\n</div>\nbar');
+});
 
 // test that nested tags are indented after block element tags
-assert.equal(cleaner.clean('<div>bar</div>'), '<div>\n  bar\n</div>');
-assert.equal(cleaner.clean('<div><div>bar</div></div>'), '<div>\n  <div>\n    bar\n  </div>\n</div>');
-assert.equal(cleaner.clean('<div>bar</div>', {'indent': '	'}), '<div>\n	bar\n</div>');
-assert.equal(cleaner.clean('<div>bar</div>', {'pretty': false}), '<div>bar</div>');
+cleaner.clean('<div>foo</div>', function (html) {
+    assert.equal(html, '<div>\n  foo\n</div>');
+});
+cleaner.clean('<div><div>foo</div></div>', function (html) {
+    assert.equal(html, '<div>\n  <div>\n    foo\n  </div>\n</div>');
+});
+cleaner.clean('<div>foo</div>', {'indent': '	'}, function (html) {
+    assert.equal(html, '<div>\n	foo\n</div>');
+});
 
 // test that output is trimmed
-assert.equal(cleaner.clean(' Foo\n'), 'Foo');
+cleaner.clean(' foo\n', function (html) {
+    assert.equal(html, 'foo');
+});
 
-process.stdout.write('all tests passed\n');
+console.log('all tests passed');
