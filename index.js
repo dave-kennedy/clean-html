@@ -115,8 +115,7 @@ function renderTag(node) {
         return render(node.children);
     }
 
-    var openTag = '<' + node.name,
-        closeTag;
+    var openTag = '<' + node.name;
 
     for (var attrib in node.attribs) {
         if (options['attr-to-remove'].indexOf(attrib) == -1) {
@@ -134,7 +133,7 @@ function renderTag(node) {
         return openTag;
     }
 
-    closeTag = '</' + node.name + '>';
+    var closeTag = '</' + node.name + '>';
 
     if (options['block-tags'].indexOf(node.name) > -1) {
         openTag = '\n' + openTag + '\n';
