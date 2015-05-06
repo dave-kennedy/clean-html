@@ -11,7 +11,16 @@ fs.readFile(file, 'utf-8', function (err, data) {
         throw err;
     }
 
-    cleaner.clean(data, function (html) {
+    var options = {
+        'add-attr-to-remove': ['class'],
+        'add-tags-to-remove': ['b', 'i', 'u'],
+        'indent': '    ',
+        'remove-comments': true,
+        'remove-empty-paras': true,
+        'replace-nbsp': true
+    };
+
+    cleaner.clean(data, options, function (html) {
         console.log(html);
     });
 });

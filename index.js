@@ -95,6 +95,7 @@ function renderText(node) {
         text = text.replace(/&nbsp;/g, ' ');
     }
 
+    // replace all whitespace characters with a single space
     return text.replace(/\s+/g, ' ');
 }
 
@@ -103,11 +104,13 @@ function renderComment(node) {
         return '';
     }
 
+    var comment = '<!--' + node.data + '-->';
+
     if (options['break-around-comments']) {
-        return '\n' + '<!--' + node.data + '-->' + '\n';
+        return '\n' + comment + '\n';
     }
 
-    return '<!--' + node.data + '-->';
+    return comment;
 }
 
 function renderTag(node) {
@@ -177,45 +180,55 @@ function render(nodes) {
         html += renderTag(node);
     });
 
-    return html.replace(/\s{2,}/g, '\n');
+    // remove leading spaces and extra line breaks
+    html = html.replace(/\n\s+/g, '\n');
+
+    return html;
 }
 
-function indentLine(line, indentLevel) {
+function getIndent(indentLevel) {
     var indent = '';
 
     for (var i = 0; i < indentLevel; i++) {
         indent += options['indent'];
     }
 
-    return indent + line;
+    return indent;
 }
 
 function indent(html) {
     var indentLevel = 0;
 
     return html.replace(/.*\n/g, function (line) {
-        var match = line.match(/<\/?(\w+).*?>/);
+        var openTags = [],
+            tagRegEx = /<\/?(\w+).*?>/g,
+            tag,
+            tagName,
+            result;
 
-        if (!match) {
-            return indentLine(line, indentLevel);
-        }
+        while (result = tagRegEx.exec(line)) {
+            tag = result[0];
+            tagName = result[1];
 
-        var tag = match[0],
-            tagName = match[1];
-
-        if (options['block-tags'].indexOf(tagName) > -1) {
-            if (tag.indexOf('</') == -1) {
-                line = indentLine(line, indentLevel);
-                indentLevel++;
-            } else {
-                indentLevel--;
-                line = indentLine(line, indentLevel);
+            if (options['empty-tags'].indexOf(tagName) > -1) {
+                continue;
             }
 
-            return line;
+            if (tag.indexOf('</') == -1) {
+                openTags.push(tag);
+                indentLevel++;
+            } else {
+                openTags.pop();
+                indentLevel--;
+            }
         }
 
-        return indentLine(line, indentLevel);
+        if (openTags.length) {
+            return getIndent(indentLevel - openTags.length)
+                + line.replace(openTags[0] + ' ', openTags[0] + '\n' + getIndent(indentLevel));
+        }
+
+        return getIndent(indentLevel) + line;
     });
 }
 
