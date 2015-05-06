@@ -122,6 +122,13 @@ Removes empty paragraph tags.
 Type: Boolean  
 Default: `false`
 
+### replace-nbsp
+
+Replaces non-breaking white space entities (`&nbsp;`) with regular spaces.
+
+Type: Boolean  
+Default: `false`
+
 ### tags-to-remove
 
 Tags to remove from markup.

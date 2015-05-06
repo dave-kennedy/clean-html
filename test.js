@@ -6,6 +6,14 @@ cleaner.clean('Foo Bar', function (html) {
     assert.equal(html, 'Foo Bar');
 });
 
+// test that non-breaking space is replaced
+cleaner.clean('Foo&nbsp;Bar', function (html) {
+    assert.equal(html, 'Foo&nbsp;Bar');
+});
+cleaner.clean('Foo&nbsp;Bar', {'replace-nbsp': true}, function (html) {
+    assert.equal(html, 'Foo Bar');
+});
+
 // test that extra whitespace is removed
 cleaner.clean('Foo  Bar', function (html) {
     assert.equal(html, 'Foo Bar');

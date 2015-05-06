@@ -41,6 +41,7 @@ function setup(opt) {
         'indent': '  ',
         'remove-comments': false,
         'remove-empty-paras': false,
+        'replace-nbsp': false,
         'tags-to-remove': [
             'center',
             'font'
@@ -59,6 +60,7 @@ function setup(opt) {
     options['indent'] = opt['indent'] || options['indent'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
+    options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
     if (opt['add-attr-to-remove']) {
@@ -87,7 +89,13 @@ function isEmpty(node) {
 }
 
 function renderText(node) {
-    return node.data.replace(/\s+/g, ' ');
+    var text = node.data;
+
+    if (options['replace-nbsp']) {
+        text = text.replace(/&nbsp;/g, ' ');
+    }
+
+    return text.replace(/\s+/g, ' ');
 }
 
 function renderComment(node) {
