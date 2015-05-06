@@ -1,12 +1,13 @@
 var cleaner = require('./index.js'),
     fs = require('fs'),
-    file = process.argv[2];
+    inFile = process.argv[2],
+    outFile = process.argv[3];
 
-if (!file) {
+if (!inFile) {
     throw 'no file specified\n';
 }
 
-fs.readFile(file, 'utf-8', function (err, data) {
+fs.readFile(inFile, 'utf-8', function (err, data) {
     if (err) {
         throw err;
     }
@@ -21,6 +22,14 @@ fs.readFile(file, 'utf-8', function (err, data) {
     };
 
     cleaner.clean(data, options, function (html) {
+        if (outFile) {
+            return fs.writeFile(outFile, html, function (err) {
+                if (err) {
+                    throw err;
+                }
+            });
+        }
+
         console.log(html);
     });
 });
