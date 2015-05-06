@@ -180,8 +180,14 @@ function render(nodes) {
         html += renderTag(node);
     });
 
-    // remove leading spaces and extra line breaks
-    html = html.replace(/\n\s+/g, '\n');
+    // remove extra spaces left behind from tags that were removed
+    html = html.replace(/ +/g, ' ');
+
+    // remove spaces before br tags
+    html = html.replace(/ <br>/g, '<br>');
+
+    // remove trailing spaces, leading spaces and extra line breaks
+    html = html.replace(/ *\n\s*/g, '\n');
 
     return html;
 }
