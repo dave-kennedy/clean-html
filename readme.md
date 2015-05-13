@@ -167,3 +167,35 @@ Additional tags to remove from markup.
 
 Type: Array  
 Default: `null`
+
+## Global installation
+
+All of the options above are available from the command line when the package is installed globally:
+
+```bash
+$ clean-html crappy.html clean.html
+```
+
+The first argument is the input file and the second is the output file. If no output file is specified, the output will be piped to STDOUT.
+
+Array options should be separated by commas. These are equivalent:
+
+```bash
+$ clean-html crappy.html clean.html --add-tags-to-remove b,i,u
+$ clean-html crappy.html clean.html --add-tags-to-remove 'b,i,u'
+```
+
+Boolean options are parsed as true if they aren't followed by anything. These are equivalent:
+
+```bash
+$ clean-html crappy.html clean.html --remove-comments
+$ clean-html crappy.html clean.html --remove-comments true
+$ clean-html crappy.html clean.html --remove-comments 'true'
+```
+
+So are these:
+
+```bash
+$ clean-html crappy.html clean.html --break-after-br false
+$ clean-html crappy.html clean.html --break-after-br 'false'
+```
