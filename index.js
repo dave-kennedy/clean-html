@@ -31,8 +31,8 @@ function setup(opt) {
             'td',
             'tr'
         ],
-        'break-around-comments': true,
         'break-after-br': true,
+        'break-around-comments': true,
         'empty-tags': [
             'br',
             'hr',
@@ -54,8 +54,8 @@ function setup(opt) {
 
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
-    options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['break-after-br'] = opt['break-after-br'] === false ? false : true;
+    options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
     options['indent'] = opt['indent'] || options['indent'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;

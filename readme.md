@@ -10,7 +10,6 @@ Do you have crappy HTML? I do!
           <td height="31"><b>Currently we have these articles available:</b>
 
         <blockquote>
-            <!-- List articles -->
               <p><a href="foo.html">The History of Foo</a><br />    
                 An <span color="red">informative</span> piece  of <FONT FACE="ARIAL">information</FONT>.</p>
               <p><a href="bar.html">A Horse Walked Into a Bar</a><br/> The bartender said
@@ -23,25 +22,21 @@ Do you have crappy HTML? I do!
 
 Just look at those blank lines and random line breaks, trailing spaces, mixed tabs, deprecated tags - it's outrageous!
 
-Let's clean it up...
-
-```bash
-$ npm install clean-html
-```
+Let's clean it up:
 
 ```javascript
 var cleaner = require('clean-html'),
     fs = require('fs'),
-    file = process.argv[2];
+    filename = process.argv[2];
 
-fs.readFile(file, 'utf-8', function (err, data) {
+fs.readFile(filename, function (err, data) {
     cleaner.clean(data, function (html) {
         console.log(html);
     });
 });
 ```
 
-Sanity restored!
+Running this script on the file above produces the following output:
 
 ```html
 <table>
@@ -49,7 +44,6 @@ Sanity restored!
     <td>
       <b>Currently we have these articles available:</b>
       <blockquote>
-        <!-- List articles -->
         <p>
           <a href="foo.html">The History of Foo</a><br>
           An <span>informative</span> piece of information.
@@ -64,6 +58,34 @@ Sanity restored!
 </table>
 ```
 
+You can pass additional options to the `clean` function like this:
+
+```javascript
+var options = {
+    'add-tags-to-remove': ['table', 'tr', 'td', 'blockquote']
+};
+
+cleaner.clean(data, options, function (html) {
+    console.log(html);
+});
+```
+
+In this case, it produces:
+
+```html
+<b>Currently we have these articles available:</b>
+<p>
+  <a href="foo.html">The History of Foo</a><br>
+  An <span>informative</span> piece of information.
+</p>
+<p>
+  <a href="bar.html">A Horse Walked Into a Bar</a><br>
+  The bartender said "Why the long face?"
+</p>
+```
+
+Sanity restored!
+
 ## Options
 
 ### attr-to-remove
@@ -75,21 +97,21 @@ Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 
 
 ### block-tags
 
-Block level element tags. Line breaks are added before and after, and nested content is indented.
+Block level element tags. Line breaks are added before and after.
 
 Type: Array  
 Default: `['blockquote', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'table', 'td', 'tr']`
 
-### break-around-comments
+### break-after-br
 
-Adds line breaks before and after comments.
+Adds line breaks after br tags.
 
 Type: Boolean  
 Default: `true`
 
-### break-after-br
+### break-around-comments
 
-Adds line breaks after br tags.
+Adds line breaks before and after comments.
 
 Type: Boolean  
 Default: `true`
@@ -131,14 +153,14 @@ Default: `false`
 
 ### tags-to-remove
 
-Tags to remove from markup.
+Tags to remove from markup. Nested content is not removed.
 
 Type: Array  
 Default: `['center', 'font']`
 
 ## Adding values to option lists
 
-These options are added for your convenience.
+These options exist for your convenience.
 
 ### add-attr-to-remove
 
@@ -170,32 +192,50 @@ Default: `null`
 
 ## Global installation
 
-All of the options above are available from the command line when the package is installed globally:
+If this package is installed globally, it can be used from the command line:
 
 ```bash
-$ clean-html crappy.html clean.html
+$ cat crappy.html | clean-html
 ```
 
-The first argument is the input file and the second is the output file. If no output file is specified, the output will be piped to STDOUT.
-
-Array options should be separated by commas. These are equivalent:
+Instead of piping the input from another program, you can supply a filename as the first argument:
 
 ```bash
-$ clean-html crappy.html clean.html --add-tags-to-remove b,i,u
-$ clean-html crappy.html clean.html --add-tags-to-remove 'b,i,u'
+$ clean-html crappy.html
 ```
 
-Boolean options are parsed as true if they aren't followed by anything. These are equivalent:
+You can redirect the output to another file:
 
 ```bash
-$ clean-html crappy.html clean.html --remove-comments
-$ clean-html crappy.html clean.html --remove-comments true
-$ clean-html crappy.html clean.html --remove-comments 'true'
+$ clean-html crappy.html > clean.html
 ```
 
-So are these:
+Or you can edit the file in place:
 
 ```bash
-$ clean-html crappy.html clean.html --break-after-br false
-$ clean-html crappy.html clean.html --break-after-br 'false'
+$ clean-html crappy.html --in-place
+```
+
+All of the options above can be used from the command line. Array option values should be separated by commas:
+
+```bash
+$ clean-html crappy.html --add-tags-to-remove b,i,u
+```
+
+Boolean options can be set to true like this:
+
+```bash
+$ clean-html crappy.html --break-after-br
+```
+
+Or like this
+
+```bash
+$ clean-html crappy.html --break-after-br true
+```
+
+They can be set to false like this:
+
+```bash
+$ clean-html crappy.html --break-after-br false
 ```

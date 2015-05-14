@@ -4,13 +4,13 @@ var cleaner = require('./index.js'),
     fs = require('fs'),
     parseArgs = require('minimist'),
     argv = parseArgs(process.argv.slice(2)),
-    inFile = argv['_'][0],
-    outFile = argv['_'][1],
+    filename = argv['_'][0],
+    inPlace = getOptAsBool(argv['in-place']),
     options = {
         'attr-to-remove': getOptAsArray(argv['attr-to-remove']),
         'block-tags': getOptAsArray(argv['block-tags']),
-        'break-around-comments': getOptAsBool(argv['break-around-comments']),
         'break-after-br': getOptAsBool(argv['break-after-br']),
+        'break-around-comments': getOptAsBool(argv['break-around-comments']),
         'empty-tags': getOptAsArray(argv['empty-tags']),
         'indent': argv['indent'],
         'remove-comments': getOptAsBool(argv['remove-comments']),
@@ -39,20 +39,40 @@ function getOptAsBool(opt) {
     return opt === true || opt === 'true';
 }
 
-fs.readFile(inFile, 'utf-8', function (err, data) {
-    if (err) {
-        throw err;
+function read(filename, callback) {
+    if (filename) {
+        return fs.readFile(filename, function (err, data) {
+            if (err) {
+                throw err;
+            }
+
+            callback(data);
+        });
     }
 
+    process.stdin.on('data', function (data) {
+        callback(data);
+    });
+}
+
+function write(html, filename) {
+    if (filename) {
+        return fs.writeFile(filename, html, function (err) {
+            if (err) {
+                throw err;
+            }
+        });
+    }
+
+    process.stdout.write(html + '\n');
+}
+
+read(filename, function (data) {
     cleaner.clean(data, options, function (html) {
-        if (outFile) {
-            return fs.writeFile(outFile, html, function (err) {
-                if (err) {
-                    throw err;
-                }
-            });
+        if (filename && inPlace) {
+            return write(html, filename);
         }
 
-        console.log(html);
+        write(html);
     });
 });
