@@ -38,11 +38,11 @@ cleaner.clean('foo<!-- bar -->qux', {'break-around-comments': false}, function (
     assert.equal(html, 'foo<!-- bar -->qux');
 });
 
-// test that empty paragraph tags are removed
+// test that empty tags are removed
 cleaner.clean('<p>\n</p>', function (html) {
     assert.equal(html, '<p>\n</p>');
 });
-cleaner.clean('<p>\n</p>', {'remove-empty-paras': true}, function (html) {
+cleaner.clean('<p>\n</p>', {'remove-empty-tags': ['p']}, function (html) {
     assert.equal(html, '');
 });
 

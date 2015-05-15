@@ -123,12 +123,12 @@ Removes comments.
 Type: Boolean  
 Default: `false`
 
-### remove-empty-paras
+### remove-empty-tags
 
-Removes empty paragraph tags.
+Tags to remove from markup if empty.
 
-Type: Boolean  
-Default: `false`
+Type: Array  
+Default: `[]`
 
 ### replace-nbsp
 

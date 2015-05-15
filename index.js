@@ -67,7 +67,7 @@ function setup(opt) {
         ],
         'indent': '  ',
         'remove-comments': false,
-        'remove-empty-paras': false,
+        'remove-empty-tags': [],
         'replace-nbsp': false,
         'tags-to-remove': [
             'center',
@@ -84,7 +84,7 @@ function setup(opt) {
     options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
     options['indent'] = opt['indent'] || options['indent'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
-    options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
+    options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
     options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
     options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
 
@@ -135,12 +135,12 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
-    if (options['remove-empty-paras'] && node.name == 'p' && isEmpty(node)) {
+    if (options['remove-empty-tags'].indexOf(node.name) > -1 && isEmpty(node)) {
         return '';
     }
 
     if (options['tags-to-remove'].indexOf(node.name) > -1) {
-        if (!node.children.length) {
+        if (isEmpty(node)) {
             return '';
         }
 
