@@ -7,17 +7,17 @@ var cleaner = require('./index.js'),
     filename = argv['_'][0],
     inPlace = getOptAsBool(argv['in-place']),
     options = {
-        'attr-to-remove': getOptAsArray(argv['attr-to-remove']),
         'break-around-comments': getOptAsBool(argv['break-around-comments']),
         'break-around-tags': getOptAsArray(argv['break-around-tags']),
         'indent': argv['indent'],
+        'remove-attributes': getOptAsArray(argv['remove-attributes']),
         'remove-comments': getOptAsBool(argv['remove-comments']),
         'remove-empty-tags': getOptAsArray(argv['remove-empty-tags']),
+        'remove-tags': getOptAsArray(argv['remove-tags']),
         'replace-nbsp': getOptAsBool(argv['replace-nbsp']),
-        'tags-to-remove': getOptAsArray(argv['tags-to-remove']),
-        'add-attr-to-remove': getOptAsArray(argv['add-attr-to-remove']),
         'add-break-around-tags': getOptAsArray(argv['add-break-around-tags']),
-        'add-tags-to-remove': getOptAsArray(argv['add-tags-to-remove'])
+        'add-remove-attributes': getOptAsArray(argv['add-remove-attributes']),
+        'add-remove-tags': getOptAsArray(argv['add-remove-tags'])
     };
 
 function getOptAsArray(opt) {

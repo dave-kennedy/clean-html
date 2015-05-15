@@ -35,19 +35,6 @@ var htmlparser = require('htmlparser2'),
 
 function setup(opt) {
     options = {
-        'attr-to-remove': [
-            'align',
-            'bgcolor',
-            'border',
-            'cellpadding',
-            'cellspacing',
-            'color',
-            'disabled',
-            'height',
-            'target',
-            'valign',
-            'width'
-        ],
         'break-around-comments': true,
         'break-around-tags': [
             'blockquote',
@@ -66,38 +53,51 @@ function setup(opt) {
             'tr'
         ],
         'indent': '  ',
+        'remove-attributes': [
+            'align',
+            'bgcolor',
+            'border',
+            'cellpadding',
+            'cellspacing',
+            'color',
+            'disabled',
+            'height',
+            'target',
+            'valign',
+            'width'
+        ],
         'remove-comments': false,
         'remove-empty-tags': [],
-        'replace-nbsp': false,
-        'tags-to-remove': [
+        'remove-tags': [
             'center',
             'font'
-        ]
+        ],
+        'replace-nbsp': false
     };
 
     if (!opt) {
         return;
     }
 
-    options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
     options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
     options['indent'] = opt['indent'] || options['indent'];
+    options['remove-attributes'] = opt['remove-attributes'] || options['remove-attributes'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
+    options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
     options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
-    options['tags-to-remove'] = opt['tags-to-remove'] || options['tags-to-remove'];
-
-    if (opt['add-attr-to-remove']) {
-        options['attr-to-remove'] = options['attr-to-remove'].concat(opt['add-attr-to-remove']);
-    }
 
     if (opt['add-break-around-tags']) {
         options['break-around-tags'] = options['break-around-tags'].concat(opt['add-break-around-tags']);
     }
 
-    if (opt['add-tags-to-remove']) {
-        options['tags-to-remove'] = options['tags-to-remove'].concat(opt['add-tags-to-remove']);
+    if (opt['add-remove-attributes']) {
+        options['remove-attributes'] = options['remove-attributes'].concat(opt['add-remove-attributes']);
+    }
+
+    if (opt['add-remove-tags']) {
+        options['remove-tags'] = options['remove-tags'].concat(opt['add-remove-tags']);
     }
 }
 
@@ -139,7 +139,7 @@ function renderTag(node) {
         return '';
     }
 
-    if (options['tags-to-remove'].indexOf(node.name) > -1) {
+    if (options['remove-tags'].indexOf(node.name) > -1) {
         if (isEmpty(node)) {
             return '';
         }
@@ -150,7 +150,7 @@ function renderTag(node) {
     var openTag = '<' + node.name;
 
     for (var attrib in node.attribs) {
-        if (options['attr-to-remove'].indexOf(attrib) == -1) {
+        if (options['remove-attributes'].indexOf(attrib) == -1) {
             openTag += ' ' + attrib + '="' + node.attribs[attrib] + '"';
         }
     }

@@ -62,7 +62,7 @@ You can pass additional options to the `clean` function like this:
 
 ```javascript
 var options = {
-    'add-tags-to-remove': ['table', 'tr', 'td', 'blockquote']
+    'add-remove-tags': ['table', 'tr', 'td', 'blockquote']
 };
 
 cleaner.clean(data, options, function (html) {
@@ -88,13 +88,6 @@ Sanity restored!
 
 ## Options
 
-### attr-to-remove
-
-Attributes to remove from markup.
-
-Type: Array  
-Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'disabled', 'height', 'target', 'valign', 'width']`
-
 ### break-around-comments
 
 Adds line breaks before and after comments.
@@ -116,6 +109,13 @@ The string to use for indentation. e.g., a tab character or one or more spaces.
 Type: String  
 Default: `'  '` (two spaces)
 
+### remove-attributes
+
+Attributes to remove from markup.
+
+Type: Array  
+Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'disabled', 'height', 'target', 'valign', 'width']`
+
 ### remove-comments
 
 Removes comments.
@@ -130,6 +130,13 @@ Tags to remove from markup if empty.
 Type: Array  
 Default: `[]`
 
+### remove-tags
+
+Tags to remove from markup. Nested content is preserved.
+
+Type: Array  
+Default: `['center', 'font']`
+
 ### replace-nbsp
 
 Replaces non-breaking white space entities (`&nbsp;`) with regular spaces.
@@ -137,23 +144,9 @@ Replaces non-breaking white space entities (`&nbsp;`) with regular spaces.
 Type: Boolean  
 Default: `false`
 
-### tags-to-remove
-
-Tags to remove from markup. Nested content is not removed.
-
-Type: Array  
-Default: `['center', 'font']`
-
 ## Adding values to option lists
 
 These options exist for your convenience.
-
-### add-attr-to-remove
-
-Additional attributes for the `attr-to-remove` option.
-
-Type: Array  
-Default: `null`
 
 ### add-break-around-tags
 
@@ -162,9 +155,16 @@ Additional tags for the `break-around-tags` option.
 Type: Array  
 Default: `null`
 
-### add-tags-to-remove
+### add-remove-attributes
 
-Additional tags for the `tags-to-remove` option.
+Additional attributes for the `remove-attributes` option.
+
+Type: Array  
+Default: `null`
+
+### add-remove-tags
+
+Additional tags for the `remove-tags` option.
 
 Type: Array  
 Default: `null`
@@ -198,7 +198,7 @@ $ clean-html crappy.html --in-place
 All of the options above can be used from the command line. Array option values should be separated by commas:
 
 ```bash
-$ clean-html crappy.html --add-tags-to-remove b,i,u
+$ clean-html crappy.html --add-remove-tags b,i,u
 ```
 
 Boolean options can be set to true like this:
