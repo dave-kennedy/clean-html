@@ -11,7 +11,6 @@ var cleaner = require('./index.js'),
         'block-tags': getOptAsArray(argv['block-tags']),
         'break-after-br': getOptAsBool(argv['break-after-br']),
         'break-around-comments': getOptAsBool(argv['break-around-comments']),
-        'empty-tags': getOptAsArray(argv['empty-tags']),
         'indent': argv['indent'],
         'remove-comments': getOptAsBool(argv['remove-comments']),
         'remove-empty-paras': getOptAsBool(argv['remove-empty-paras']),
@@ -19,7 +18,6 @@ var cleaner = require('./index.js'),
         'tags-to-remove': getOptAsArray(argv['tags-to-remove']),
         'add-attr-to-remove': getOptAsArray(argv['add-attr-to-remove']),
         'add-block-tags': getOptAsArray(argv['add-block-tags']),
-        'add-empty-tags': getOptAsArray(argv['add-empty-tags']),
         'add-tags-to-remove': getOptAsArray(argv['add-tags-to-remove'])
     };
 

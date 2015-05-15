@@ -116,13 +116,6 @@ Adds line breaks before and after comments.
 Type: Boolean  
 Default: `true`
 
-### empty-tags
-
-Empty element tags.
-
-Type: Array  
-Default: `['br', 'hr', 'img']`
-
 ### indent
 
 The string to use for indentation. e.g., a tab character or one or more spaces.
@@ -172,13 +165,6 @@ Default: `null`
 ### add-block-tags
 
 Additional block level element tags.
-
-Type: Array  
-Default: `null`
-
-### add-empty-tags
-
-Additional empty element tags.
 
 Type: Array  
 Default: `null`

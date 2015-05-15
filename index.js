@@ -1,4 +1,36 @@
 var htmlparser = require('htmlparser2'),
+    voidElements = [
+        'area',
+        'base',
+        'basefont',
+        'br',
+        'col',
+        'command',
+        'embed',
+        'frame',
+        'hr',
+        'img',
+        'input',
+        'isindex',
+        'keygen',
+        'link',
+        'meta',
+        'param',
+        'source',
+        'track',
+        'wbr',
+
+        //common self closing svg elements
+        'circle',
+        'ellipse',
+        'line',
+        'path',
+        'polygone',
+        'polyline',
+        'rect',
+        'stop',
+        'use'
+    ],
     options = {};
 
 function setup(opt) {
@@ -33,11 +65,6 @@ function setup(opt) {
         ],
         'break-after-br': true,
         'break-around-comments': true,
-        'empty-tags': [
-            'br',
-            'hr',
-            'img'
-        ],
         'indent': '  ',
         'remove-comments': false,
         'remove-empty-paras': false,
@@ -56,7 +83,6 @@ function setup(opt) {
     options['block-tags'] = opt['block-tags'] || options['block-tags'];
     options['break-after-br'] = opt['break-after-br'] === false ? false : true;
     options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
-    options['empty-tags'] = opt['empty-tags'] || options['empty-tags'];
     options['indent'] = opt['indent'] || options['indent'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
@@ -69,10 +95,6 @@ function setup(opt) {
 
     if (opt['add-block-tags']) {
         options['block-tags'] = options['block-tags'].concat(opt['add-block-tags']);
-    }
-
-    if (opt['add-empty-tags']) {
-        options['empty-tags'] = options['empty-tags'].concat(opt['add-empty-tags']);
     }
 
     if (opt['add-tags-to-remove']) {
@@ -136,7 +158,7 @@ function renderTag(node) {
 
     openTag += '>';
 
-    if (options['empty-tags'].indexOf(node.name) > -1) {
+    if (voidElements.indexOf(node.name) > -1) {
         if (options['break-after-br'] && node.name == 'br') {
             return openTag + '\n';
         }
@@ -216,7 +238,7 @@ function indent(html) {
             tag = result[0];
             tagName = result[1];
 
-            if (options['empty-tags'].indexOf(tagName) > -1) {
+            if (voidElements.indexOf(tagName) > -1) {
                 continue;
             }
 
