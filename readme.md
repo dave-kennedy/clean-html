@@ -132,7 +132,7 @@ Default: `[]`
 
 ### remove-tags
 
-Tags to remove from markup. Nested content is preserved.
+Tags to always remove from markup. Nested content is preserved.
 
 Type: Array  
 Default: `['center', 'font']`
@@ -150,21 +150,21 @@ These options exist for your convenience.
 
 ### add-break-around-tags
 
-Additional tags for the `break-around-tags` option.
+Additional tags to include in `break-around-tags`.
 
 Type: Array  
 Default: `null`
 
 ### add-remove-attributes
 
-Additional attributes for the `remove-attributes` option.
+Additional attributes to include in `remove-attributes`.
 
 Type: Array  
 Default: `null`
 
 ### add-remove-tags
 
-Additional tags for the `remove-tags` option.
+Additional tags to include in `remove-tags`.
 
 Type: Array  
 Default: `null`

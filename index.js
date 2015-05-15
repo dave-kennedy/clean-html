@@ -101,6 +101,30 @@ function setup(opt) {
     }
 }
 
+function breakAround(node) {
+    if (node.type == 'text') {
+        return false;
+    }
+
+    if (node.type == 'comment' && options['break-around-comments']) {
+        return true;
+    }
+
+    if (options['break-around-tags'].indexOf(node.name) > -1) {
+        return true;
+    }
+
+    return breakWithin(node);
+}
+
+function breakWithin(node) {
+    if (node.type != 'tag') {
+        return false;
+    }
+
+    return node.children.some(breakAround) || node.children.some(breakWithin);
+}
+
 function isEmpty(node) {
     if (node.type == 'text' || node.type == 'comment') {
         return !node.data.trim();
@@ -111,6 +135,14 @@ function isEmpty(node) {
 
 function renderText(node) {
     var text = node.data;
+
+    if (!node.prev || breakAround(node.prev)) {
+        text = text.trimLeft();
+    }
+
+    if (!node.next || breakAround(node.next)) {
+        text = text.trimRight();
+    }
 
     if (options['replace-nbsp']) {
         text = text.replace(/&nbsp;/g, ' ');
@@ -127,7 +159,7 @@ function renderComment(node) {
 
     var comment = '<!--' + node.data + '-->';
 
-    if (options['break-around-comments']) {
+    if (breakAround(node)) {
         return '\n' + comment + '\n';
     }
 
@@ -158,7 +190,7 @@ function renderTag(node) {
     openTag += '>';
 
     if (voidElements.indexOf(node.name) > -1) {
-        if (options['break-around-tags'].indexOf(node.name) > -1) {
+        if (breakAround(node)) {
             return '\n' + openTag + '\n';
         }
 
@@ -167,13 +199,14 @@ function renderTag(node) {
 
     var closeTag = '</' + node.name + '>';
 
-    if (options['break-around-tags'].indexOf(node.name) > -1) {
-        openTag = '\n' + openTag + '\n';
-        closeTag = '\n' + closeTag + '\n';
+    if (breakAround(node)) {
+        openTag = '\n' + openTag;
+        closeTag = closeTag + '\n';
     }
 
-    if (!node.children.length) {
-        return openTag + closeTag;
+    if (breakWithin(node)) {
+        openTag = openTag + '\n';
+        closeTag = '\n' + closeTag;
     }
 
     return openTag + render(node.children) + closeTag;
@@ -201,14 +234,8 @@ function render(nodes) {
         html += renderTag(node);
     });
 
-    // remove extra spaces left behind from tags that were removed
-    html = html.replace(/ +/g, ' ');
-
-    // remove spaces before br tags
-    html = html.replace(/ <br>/g, '<br>');
-
-    // remove trailing spaces, leading spaces and extra line breaks
-    html = html.replace(/ *\n\s*/g, '\n');
+    // remove extra line breaks
+    html = html.replace(/\n+/g, '\n');
 
     return html;
 }
@@ -250,12 +277,7 @@ function indent(html) {
             }
         }
 
-        if (openTags.length) {
-            return getIndent(indentLevel - openTags.length)
-                + line.replace(openTags[0] + ' ', openTags[0] + '\n' + getIndent(indentLevel));
-        }
-
-        return getIndent(indentLevel) + line;
+        return getIndent(indentLevel - openTags.length) + line;
     });
 }
 
