@@ -8,16 +8,15 @@ var cleaner = require('./index.js'),
     inPlace = getOptAsBool(argv['in-place']),
     options = {
         'attr-to-remove': getOptAsArray(argv['attr-to-remove']),
-        'block-tags': getOptAsArray(argv['block-tags']),
-        'break-after-br': getOptAsBool(argv['break-after-br']),
         'break-around-comments': getOptAsBool(argv['break-around-comments']),
+        'break-around-tags': getOptAsArray(argv['break-around-tags']),
         'indent': argv['indent'],
         'remove-comments': getOptAsBool(argv['remove-comments']),
         'remove-empty-paras': getOptAsBool(argv['remove-empty-paras']),
         'replace-nbsp': getOptAsBool(argv['replace-nbsp']),
         'tags-to-remove': getOptAsArray(argv['tags-to-remove']),
         'add-attr-to-remove': getOptAsArray(argv['add-attr-to-remove']),
-        'add-block-tags': getOptAsArray(argv['add-block-tags']),
+        'add-break-around-tags': getOptAsArray(argv['add-break-around-tags']),
         'add-tags-to-remove': getOptAsArray(argv['add-tags-to-remove'])
     };
 

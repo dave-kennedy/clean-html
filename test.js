@@ -56,14 +56,6 @@ cleaner.clean('<span color="red">foo</span>', function (html) {
     assert.equal(html, '<span>foo</span>');
 });
 
-// test that line break is added after br tag
-cleaner.clean('foo<br>bar', function (html) {
-    assert.equal(html, 'foo<br>\nbar');
-});
-cleaner.clean('foo<br>bar', {'break-after-br': false}, function (html) {
-    assert.equal(html, 'foo<br>bar');
-});
-
 // test that line breaks are added before and after block element tags
 cleaner.clean('foo<div></div>bar', function (html) {
     assert.equal(html, 'foo\n<div>\n</div>\nbar');

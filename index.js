@@ -48,8 +48,10 @@ function setup(opt) {
             'valign',
             'width'
         ],
-        'block-tags': [
+        'break-around-comments': true,
+        'break-around-tags': [
             'blockquote',
+            'br',
             'div',
             'h1',
             'h2',
@@ -63,8 +65,6 @@ function setup(opt) {
             'td',
             'tr'
         ],
-        'break-after-br': true,
-        'break-around-comments': true,
         'indent': '  ',
         'remove-comments': false,
         'remove-empty-paras': false,
@@ -80,9 +80,8 @@ function setup(opt) {
     }
 
     options['attr-to-remove'] = opt['attr-to-remove'] || options['attr-to-remove'];
-    options['block-tags'] = opt['block-tags'] || options['block-tags'];
-    options['break-after-br'] = opt['break-after-br'] === false ? false : true;
     options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
+    options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
     options['indent'] = opt['indent'] || options['indent'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-paras'] = opt['remove-empty-paras'] === true ? true : false;
@@ -93,8 +92,8 @@ function setup(opt) {
         options['attr-to-remove'] = options['attr-to-remove'].concat(opt['add-attr-to-remove']);
     }
 
-    if (opt['add-block-tags']) {
-        options['block-tags'] = options['block-tags'].concat(opt['add-block-tags']);
+    if (opt['add-break-around-tags']) {
+        options['break-around-tags'] = options['break-around-tags'].concat(opt['add-break-around-tags']);
     }
 
     if (opt['add-tags-to-remove']) {
@@ -159,8 +158,8 @@ function renderTag(node) {
     openTag += '>';
 
     if (voidElements.indexOf(node.name) > -1) {
-        if (options['break-after-br'] && node.name == 'br') {
-            return openTag + '\n';
+        if (options['break-around-tags'].indexOf(node.name) > -1) {
+            return '\n' + openTag + '\n';
         }
 
         return openTag;
@@ -168,7 +167,7 @@ function renderTag(node) {
 
     var closeTag = '</' + node.name + '>';
 
-    if (options['block-tags'].indexOf(node.name) > -1) {
+    if (options['break-around-tags'].indexOf(node.name) > -1) {
         openTag = '\n' + openTag + '\n';
         closeTag = '\n' + closeTag + '\n';
     }

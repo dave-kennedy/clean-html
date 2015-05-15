@@ -95,26 +95,19 @@ Attributes to remove from markup.
 Type: Array  
 Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'disabled', 'height', 'target', 'valign', 'width']`
 
-### block-tags
-
-Block level element tags. Line breaks are added before and after.
-
-Type: Array  
-Default: `['blockquote', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'table', 'td', 'tr']`
-
-### break-after-br
-
-Adds line breaks after br tags.
-
-Type: Boolean  
-Default: `true`
-
 ### break-around-comments
 
 Adds line breaks before and after comments.
 
 Type: Boolean  
 Default: `true`
+
+### break-around-tags
+
+Tags that should have line breaks added before and after.
+
+Type: Array  
+Default: `['blockquote', 'br', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'table', 'td', 'tr']`
 
 ### indent
 
@@ -157,21 +150,21 @@ These options exist for your convenience.
 
 ### add-attr-to-remove
 
-Additional attributes to remove from markup.
+Additional attributes for the `attr-to-remove` option.
 
 Type: Array  
 Default: `null`
 
-### add-block-tags
+### add-break-around-tags
 
-Additional block level element tags.
+Additional tags for the `break-around-tags` option.
 
 Type: Array  
 Default: `null`
 
 ### add-tags-to-remove
 
-Additional tags to remove from markup.
+Additional tags for the `tags-to-remove` option.
 
 Type: Array  
 Default: `null`
@@ -211,17 +204,17 @@ $ clean-html crappy.html --add-tags-to-remove b,i,u
 Boolean options can be set to true like this:
 
 ```bash
-$ clean-html crappy.html --break-after-br
+$ clean-html crappy.html --remove-comments
 ```
 
 Or like this
 
 ```bash
-$ clean-html crappy.html --break-after-br true
+$ clean-html crappy.html --remove-comments true
 ```
 
 They can be set to false like this:
 
 ```bash
-$ clean-html crappy.html --break-after-br false
+$ clean-html crappy.html --remove-comments false
 ```
