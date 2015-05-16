@@ -136,16 +136,16 @@ function isEmpty(node) {
 function renderText(node) {
     var text = node.data;
 
+    if (options['replace-nbsp']) {
+        text = text.replace(/&nbsp;/g, ' ');
+    }
+
     if (!node.prev || breakAround(node.prev)) {
         text = text.trimLeft();
     }
 
     if (!node.next || breakAround(node.next)) {
         text = text.trimRight();
-    }
-
-    if (options['replace-nbsp']) {
-        text = text.replace(/&nbsp;/g, ' ');
     }
 
     // replace all whitespace characters with a single space
