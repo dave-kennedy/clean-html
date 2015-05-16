@@ -144,6 +144,13 @@ Replaces non-breaking white space entities (`&nbsp;`) with regular spaces.
 Type: Boolean  
 Default: `false`
 
+### wrap
+
+The column number where lines should wrap.
+
+Type: Int  
+Default: `120`
+
 ## Adding values to option lists
 
 These options exist for your convenience.

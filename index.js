@@ -25,7 +25,7 @@ var htmlparser = require('htmlparser2'),
         'ellipse',
         'line',
         'path',
-        'polygone',
+        'polygon',
         'polyline',
         'rect',
         'stop',
@@ -72,7 +72,8 @@ function setup(opt) {
             'center',
             'font'
         ],
-        'replace-nbsp': false
+        'replace-nbsp': false,
+        'wrap': 120
     };
 
     if (!opt) {
@@ -87,6 +88,7 @@ function setup(opt) {
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
     options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
     options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
+    options['wrap'] = opt['wrap'] || options['wrap'];
 
     if (opt['add-break-around-tags']) {
         options['break-around-tags'] = options['break-around-tags'].concat(opt['add-break-around-tags']);
@@ -250,6 +252,19 @@ function getIndent(indentLevel) {
     return indent;
 }
 
+function wrap(line, indent) {
+    var bound = line.lastIndexOf(' ', options['wrap']);
+
+    var line1 = line.substr(0, bound),
+        line2 = indent + line.substr(bound + 1);
+
+    if (line2.length > options['wrap']) {
+        line2 = wrap(line2, indent);
+    }
+
+    return line1 + '\n' + line2;
+}
+
 function indent(html) {
     var indentLevel = 0;
 
@@ -277,7 +292,15 @@ function indent(html) {
             }
         }
 
-        return getIndent(indentLevel - openTags.length) + line;
+        var indent = getIndent(indentLevel - openTags.length);
+
+        line = indent + line;
+
+        if (line.length > options['wrap']) {
+            line = wrap(line, indent);
+        }
+
+        return line;
     });
 }
 
