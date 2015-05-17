@@ -118,7 +118,7 @@ Default: `'  '` (two spaces)
 Attributes to remove from markup.
 
 Type: Array  
-Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'disabled', 'height', 'target', 'valign', 'width']`
+Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'height', 'target', 'valign', 'width']`
 
 ### remove-comments
 
@@ -152,7 +152,7 @@ Default: `false`
 
 The column number where lines should wrap.
 
-Type: Int  
+Type: Integer  
 Default: `120`
 
 ## Adding values to option lists

@@ -60,7 +60,6 @@ function setup(opt) {
             'cellpadding',
             'cellspacing',
             'color',
-            'disabled',
             'height',
             'target',
             'valign',
