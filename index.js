@@ -87,7 +87,7 @@ function setup(opt) {
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
     options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
     options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
-    options['wrap'] = opt['wrap'] || options['wrap'];
+    options['wrap'] = opt['wrap'] >= 0 ? opt['wrap'] : options['wrap'];
 
     if (opt['add-break-around-tags']) {
         options['break-around-tags'] = options['break-around-tags'].concat(opt['add-break-around-tags']);
@@ -254,6 +254,14 @@ function getIndent(indentLevel) {
 function wrap(line, indent) {
     var bound = line.lastIndexOf(' ', options['wrap']);
 
+    if (bound == -1) {
+        bound = line.indexOf(' ', options['wrap']);
+
+        if (bound == -1) {
+            return line;
+        }
+    }
+
     var line1 = line.substr(0, bound),
         line2 = indent + line.substr(bound + 1);
 
@@ -295,7 +303,7 @@ function indent(html) {
 
         line = indent + line;
 
-        if (line.length > options['wrap']) {
+        if (options['wrap'] && line.length > options['wrap']) {
             line = wrap(line, indent);
         }
 

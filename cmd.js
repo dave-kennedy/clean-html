@@ -15,6 +15,7 @@ var cleaner = require('./index.js'),
         'remove-empty-tags': getOptAsArray(argv['remove-empty-tags']),
         'remove-tags': getOptAsArray(argv['remove-tags']),
         'replace-nbsp': getOptAsBool(argv['replace-nbsp']),
+        'wrap': getOptAsInt(argv['wrap']),
         'add-break-around-tags': getOptAsArray(argv['add-break-around-tags']),
         'add-remove-attributes': getOptAsArray(argv['add-remove-attributes']),
         'add-remove-tags': getOptAsArray(argv['add-remove-tags'])
@@ -42,6 +43,16 @@ function getOptAsBool(opt) {
     }
 
     return opt === true || opt === 'true';
+}
+
+function getOptAsInt(opt) {
+    if (opt === undefined) {
+        return undefined;
+    }
+
+    var val = parseInt(opt);
+
+    return isNaN(val) ? undefined : val;
 }
 
 function read(filename, callback) {

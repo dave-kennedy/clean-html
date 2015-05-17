@@ -150,7 +150,7 @@ Default: `false`
 
 ### wrap
 
-The column number where lines should wrap.
+The column number where lines should wrap. Set to 0 to disable line wrapping.
 
 Type: Integer  
 Default: `120`
