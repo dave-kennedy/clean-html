@@ -45,11 +45,13 @@ Running this script on the file above produces the following output:
       <b>Currently we have these articles available:</b>
       <blockquote>
         <p>
-          <a href="foo.html">The History of Foo</a><br>
+          <a href="foo.html">The History of Foo</a>
+          <br>
           An <span>informative</span> piece of information.
         </p>
         <p>
-          <a href="bar.html">A Horse Walked Into a Bar</a><br>
+          <a href="bar.html">A Horse Walked Into a Bar</a>
+          <br>
           The bartender said "Why the long face?"
         </p>
       </blockquote>
@@ -75,11 +77,13 @@ In this case, it produces:
 ```html
 <b>Currently we have these articles available:</b>
 <p>
-  <a href="foo.html">The History of Foo</a><br>
+  <a href="foo.html">The History of Foo</a>
+  <br>
   An <span>informative</span> piece of information.
 </p>
 <p>
-  <a href="bar.html">A Horse Walked Into a Bar</a><br>
+  <a href="bar.html">A Horse Walked Into a Bar</a>
+  <br>
   The bartender said "Why the long face?"
 </p>
 ```
