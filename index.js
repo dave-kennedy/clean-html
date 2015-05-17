@@ -103,15 +103,19 @@ function setup(opt) {
 }
 
 function breakAround(node) {
+    if (shouldRemove(node)) {
+        return false;
+    }
+
     if (node.type == 'text') {
         return false;
     }
 
-    if (node.type == 'comment' && options['break-around-comments']) {
-        return true;
+    if (node.type == 'comment') {
+        return options['break-around-comments'];
     }
 
-    if (options['break-around-tags'].indexOf(node.name) > -1) {
+    if (options['break-around-tags'].indexOf(node.name) != -1) {
         return true;
     }
 
@@ -119,6 +123,10 @@ function breakAround(node) {
 }
 
 function breakWithin(node) {
+    if (shouldRemove(node)) {
+        return false;
+    }
+
     if (node.type != 'tag') {
         return false;
     }
@@ -127,25 +135,53 @@ function breakWithin(node) {
 }
 
 function isEmpty(node) {
-    if (node.type == 'text' || node.type == 'comment') {
+    if (node.type == 'text') {
+        if (options['replace-nbsp']) {
+            !node.data.replace(/&nbsp;/g, ' ').trim();
+        }
+
+        return !node.data.trim();
+    }
+
+    if (node.type == 'comment') {
         return !node.data.trim();
     }
 
     return !node.children.length || node.children.every(isEmpty);
 }
 
+function shouldRemove(node) {
+    if (node.type == 'text') {
+        return isEmpty(node);
+    }
+
+    if (node.type == 'comment') {
+        return options['remove-comments'] || isEmpty(node);
+    }
+
+    if (options['remove-empty-tags'].indexOf(node.name) != -1) {
+        return isEmpty(node);
+    }
+
+    return options['remove-tags'].indexOf(node.name) != -1;
+}
+
 function renderText(node) {
+    if (shouldRemove(node)) {
+        return '';
+    }
+
     var text = node.data;
 
     if (options['replace-nbsp']) {
         text = text.replace(/&nbsp;/g, ' ');
     }
 
-    if (!node.prev || breakAround(node.prev)) {
+    if (!node.prev || breakAround(node.prev) || shouldRemove(node.prev)) {
         text = text.trimLeft();
     }
 
-    if (!node.next || breakAround(node.next)) {
+    if (!node.next || breakAround(node.next) || shouldRemove(node.next)) {
         text = text.trimRight();
     }
 
@@ -154,7 +190,7 @@ function renderText(node) {
 }
 
 function renderComment(node) {
-    if (options['remove-comments']) {
+    if (shouldRemove(node)) {
         return '';
     }
 
@@ -168,11 +204,7 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
-    if (options['remove-empty-tags'].indexOf(node.name) > -1 && isEmpty(node)) {
-        return '';
-    }
-
-    if (options['remove-tags'].indexOf(node.name) > -1) {
+    if (shouldRemove(node)) {
         if (isEmpty(node)) {
             return '';
         }
@@ -190,7 +222,7 @@ function renderTag(node) {
 
     openTag += '>';
 
-    if (voidElements.indexOf(node.name) > -1) {
+    if (voidElements.indexOf(node.name) != -1) {
         if (breakAround(node)) {
             return '\n' + openTag + '\n';
         }
@@ -286,7 +318,7 @@ function indent(html) {
             tag = result[0];
             tagName = result[1];
 
-            if (voidElements.indexOf(tagName) > -1) {
+            if (voidElements.indexOf(tagName) != -1) {
                 continue;
             }
 
