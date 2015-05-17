@@ -25,6 +25,14 @@ function getOptAsArray(opt) {
         return undefined;
     }
 
+    if (Array.isArray(opt)) {
+        return opt.map(function (o) {
+            return o.split(',');
+        }).reduce(function (prev, curr) {
+            return prev.concat(curr);
+        });
+    }
+
     return opt.split(',');
 }
 
