@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:Pajamaman/clean-html.git"
+    "url": "git@github.com:dave-kennedy/clean-html.git"
   },
   "keywords": [
     "beautify",
@@ -23,10 +23,10 @@
     "pretty",
     "tidy"
   ],
-  "author": "Pajamaman <Pajamaman@users.noreply.github.com> (http://github.com/Pajamaman)",
+  "author": "Dave Kennedy <dave-kennedy@users.noreply.github.com> (http://github.com/dave-kennedy)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Pajamaman/clean-html/issues"
+    "url": "https://github.com/dave-kennedy/clean-html/issues"
   },
-  "homepage": "https://github.com/Pajamaman/clean-html"
+  "homepage": "https://github.com/dave-kennedy/clean-html"
 }
