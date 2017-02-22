@@ -245,6 +245,10 @@ function renderTag(node) {
     return openTag + render(node.children) + closeTag;
 }
 
+function renderDirective(node) {
+  return '<' + node.data + '>';
+}
+
 function render(nodes) {
     var html = '';
 
@@ -261,6 +265,11 @@ function render(nodes) {
 
         if (node.type == 'comment') {
             html += renderComment(node);
+            return;
+        }
+
+        if (node.type == 'directive') {
+            html += renderDirective(node)
             return;
         }
 

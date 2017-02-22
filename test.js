@@ -137,5 +137,9 @@ cleaner.clean('foo<div><div>bar</div></div>qux', {'break-around-tags': ['div'], 
 cleaner.clean('foo<div><span><div>bar</div></span></div>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<div>\n  <span>\n    <div>bar</div>\n  </span>\n</div>\nqux');
 });
+// should not crash on directive rendering (ex doctype)
+cleaner.clean('<!DOCTYPE html>', function (html) {
+    assert.equal(html, '<!DOCTYPE html>')
+});
 
 console.log('all tests passed');
