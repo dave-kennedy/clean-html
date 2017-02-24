@@ -38,6 +38,7 @@ function setup(opt) {
         'break-around-comments': true,
         'break-around-tags': [
             'blockquote',
+            'body',
             'br',
             'div',
             'h1',
@@ -46,10 +47,16 @@ function setup(opt) {
             'h4',
             'h5',
             'h6',
+            'head',
             'hr',
+            'link',
+            'meta',
             'p',
+            'script',
+            'style',
             'table',
             'td',
+            'title',
             'tr'
         ],
         'indent': '  ',
@@ -173,15 +180,19 @@ function renderText(node) {
 
     var text = node.data;
 
+    if (node.parent && (node.parent.type == 'script' || node.parent.type == 'style')) {
+        return text;
+    }
+
     if (options['replace-nbsp']) {
         text = text.replace(/&nbsp;/g, ' ');
     }
 
-    if (!node.prev || breakAround(node.prev) || shouldRemove(node.prev)) {
+    if (!node.prev || breakAround(node.prev)) {
         text = text.trimLeft();
     }
 
-    if (!node.next || breakAround(node.next) || shouldRemove(node.next)) {
+    if (!node.next || breakAround(node.next)) {
         text = text.trimRight();
     }
 
@@ -246,7 +257,7 @@ function renderTag(node) {
 }
 
 function renderDirective(node) {
-  return '<' + node.data + '>';
+    return '<' + node.data + '>';
 }
 
 function render(nodes) {

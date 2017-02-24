@@ -19,6 +19,26 @@ cleaner.clean(' foo\n', function (html) {
     assert.equal(html, 'foo');
 });
 
+// test that directive is unchanged
+cleaner.clean('<!DOCTYPE html>', function (html) {
+    assert.equal(html, '<!DOCTYPE html>')
+});
+
+// test that tags are lowercased
+cleaner.clean('<A HREF="http://foo">bar</A>', function (html) {
+    assert.equal(html, '<a href="http://foo">bar</a>');
+});
+
+// test that script tags are unchanged
+cleaner.clean('<script type="text/javascript">console.log("foo");</script>', function (html) {
+    assert.equal(html, '<script type="text/javascript">console.log("foo");</script>')
+});
+
+// test that style tags are unchanged
+cleaner.clean('<style>a { color: red; }</style>', function (html) {
+    assert.equal(html, '<style>a { color: red; }</style>')
+});
+
 // test that line breaks are not added around comments when break-around-comments is false
 cleaner.clean('foo<!-- bar -->qux', {'break-around-comments': false}, function (html) {
     assert.equal(html, 'foo<!-- bar -->qux');
@@ -82,64 +102,68 @@ cleaner.clean('Foo&nbsp;Bar', {'replace-nbsp': true}, function (html) {
     assert.equal(html, 'Foo Bar');
 });
 
-// ----------
 // indent tests
-// ----------
 
-// test indent when parent is not included in break-around-tags and...
-// child is text - indent is not added
+// test that indent is not added when child is text
 cleaner.clean('foo<span>bar</span>qux', {'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span>bar</span>qux');
 });
-// child is comment and break-around-comments is false - indent is not added
+// test that indent is not added when child is comment and break-around-comments is false
 cleaner.clean('foo<span><!-- bar --></span>qux', {'break-around-comments': false, 'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span><!-- bar --></span>qux');
 });
-// child is comment and break-around-comments is true - indent is added
+// test that indent is added when child is comment and break-around-comments is true
 cleaner.clean('foo<span><!-- bar --></span>qux', {'break-around-comments': true, 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <!-- bar -->\n</span>\nqux');
 });
-// child tag is not included in break-around-tags - indent is not added
+// test that indent is not added when child tag is not included in break-around-tags
 cleaner.clean('foo<span><span>bar</span></span>qux', {'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span><span>bar</span></span>qux');
 });
-// child tag is included in break-around-tags - indent is added
+// test that indent is added when child tag is included in break-around-tags
 cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <div>bar</div>\n</span>\nqux');
 });
-// child tag is not included in break-around-tags but contains a tag that is
+// test that indent is added when child tag is not included in break-around-tags but descendant is
 cleaner.clean('foo<span><span><div>bar</div></span></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <span>\n    <div>bar</div>\n  </span>\n</span>\nqux');
 });
 
-// test indent when parent is included in break-around-tags and...
-// child is text - indent is not added
-cleaner.clean('foo<div>bar</div>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div>bar</div>\nqux');
-});
-// child is comment and break-around-comments is false - indent is not added
-cleaner.clean('foo<div><!-- bar --></div>qux', {'break-around-comments': false, 'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div><!-- bar --></div>\nqux');
-});
-// child is comment and break-around-comments is true - indent is added
-cleaner.clean('foo<div><!-- bar --></div>qux', {'break-around-comments': true, 'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div>\n  <!-- bar -->\n</div>\nqux');
-});
-// child tag is not included in break-around-tags - indent is not added
-cleaner.clean('foo<div><span>bar</span></div>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div><span>bar</span></div>\nqux');
-});
-// child tag is included in break-around-tags - indent is added
-cleaner.clean('foo<div><div>bar</div></div>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div>\n  <div>bar</div>\n</div>\nqux');
-});
-// child tag is not included in break-around-tags but contains a tag that is
-cleaner.clean('foo<div><span><div>bar</div></span></div>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, 'foo\n<div>\n  <span>\n    <div>bar</div>\n  </span>\n</div>\nqux');
-});
-// should not crash on directive rendering (ex doctype)
-cleaner.clean('<!DOCTYPE html>', function (html) {
-    assert.equal(html, '<!DOCTYPE html>')
+// end to end test
+var input = `<table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+          <td height="31"><b>Currently we have these articles available:</b>
+
+        <blockquote>
+              <p><a href="foo.html">The History of Foo</a><br />    
+                An <span color="red">informative</span> piece  of <font face="arial">information</font>.</p>
+              <p><A HREF="bar.html">A Horse Walked Into a Bar</A><br/> The bartender said
+                "Why the long face?"</p>
+	</blockquote>
+          </td>
+        </tr>
+      </table>`;
+var expected = `<table>
+  <tr>
+    <td>
+      <b>Currently we have these articles available:</b>
+      <blockquote>
+        <p>
+          <a href="foo.html">The History of Foo</a>
+          <br>
+          An <span>informative</span> piece of information.
+        </p>
+        <p>
+          <a href="bar.html">A Horse Walked Into a Bar</a>
+          <br>
+          The bartender said "Why the long face?"
+        </p>
+      </blockquote>
+    </td>
+  </tr>
+</table>`;
+cleaner.clean(input, function (actual) {
+    assert.equal(expected, actual);
 });
 
 console.log('all tests passed');

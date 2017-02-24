@@ -11,8 +11,8 @@ Do you have crappy HTML? I do!
 
         <blockquote>
               <p><a href="foo.html">The History of Foo</a><br />    
-                An <span color="red">informative</span> piece  of <FONT FACE="ARIAL">information</FONT>.</p>
-              <p><a href="bar.html">A Horse Walked Into a Bar</a><br/> The bartender said
+                An <span color="red">informative</span> piece  of <font face="arial">information</font>.</p>
+              <p><A HREF="bar.html">A Horse Walked Into a Bar</A><br/> The bartender said
                 "Why the long face?"</p>
 	</blockquote>
           </td>
@@ -104,7 +104,7 @@ Default: `true`
 Tags that should have line breaks added before and after.
 
 Type: Array  
-Default: `['blockquote', 'br', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'p', 'table', 'td', 'tr']`
+Default: `['body', 'blockquote', 'br', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'link', 'meta', 'p', 'script', 'style', 'table', 'title', 'td', 'tr']`
 
 ### indent
 
