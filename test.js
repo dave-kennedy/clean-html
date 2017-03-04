@@ -117,8 +117,8 @@ cleaner.clean('foo<span><!-- bar --></span>qux', {'break-around-comments': true,
     assert.equal(html, 'foo\n<span>\n  <!-- bar -->\n</span>\nqux');
 });
 // test that indent is not added when child tag is not included in break-around-tags
-cleaner.clean('foo<span><span>bar</span></span>qux', {'indent': '  '}, function (html) {
-    assert.equal(html, 'foo<span><span>bar</span></span>qux');
+cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': [], 'indent': '  '}, function (html) {
+    assert.equal(html, 'foo<span><div>bar</div></span>qux');
 });
 // test that indent is added when child tag is included in break-around-tags
 cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
@@ -127,6 +127,18 @@ cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': ['div']
 // test that indent is added when child tag is not included in break-around-tags but descendant is
 cleaner.clean('foo<span><span><div>bar</div></span></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <span>\n    <div>bar</div>\n  </span>\n</span>\nqux');
+});
+
+// wrap tests
+
+// test that long line is wrapped and indented
+cleaner.clean('<div><div>I prefer the concrete, the graspable, the proveable.</div></div>', {'wrap': 40}, function (html) {
+    assert.equal(html, '<div>\n  <div>I prefer the concrete, the\n  graspable, the proveable.</div>\n</div>');
+});
+
+// test that long line without whitespace is indented but not wrapped
+cleaner.clean('<div><div>Iprefertheconcrete,thegraspable,theproveable.</div></div>', {'wrap': 40}, function (html) {
+    assert.equal(html, '<div>\n  <div>Iprefertheconcrete,thegraspable,theproveable.</div>\n</div>');
 });
 
 // end to end test

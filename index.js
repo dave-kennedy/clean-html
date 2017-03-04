@@ -20,7 +20,7 @@ var htmlparser = require('htmlparser2'),
         'track',
         'wbr',
 
-        //common self closing svg elements
+        // common self closing svg elements
         'circle',
         'ellipse',
         'line',
@@ -288,9 +288,7 @@ function render(nodes) {
     });
 
     // remove extra line breaks
-    html = html.replace(/\n+/g, '\n');
-
-    return html;
+    return html.replace(/\n+/g, '\n');
 }
 
 function getIndent(indentLevel) {
@@ -304,18 +302,29 @@ function getIndent(indentLevel) {
 }
 
 function wrap(line, indent) {
+    // find the last space before the column limit
     var bound = line.lastIndexOf(' ', options['wrap']);
 
     if (bound == -1) {
+        // there are no spaces before the colum limit
+        // so find the first space after it
         bound = line.indexOf(' ', options['wrap']);
 
         if (bound == -1) {
+            // there are no spaces in the line
+            // so we can't wrap it
             return line;
         }
     }
 
     var line1 = line.substr(0, bound),
         line2 = indent + line.substr(bound + 1);
+
+    if (line1.trim().length == 0) {
+        // there are no spaces in the line other than the indent
+        // so we can't wrap it
+        return line;
+    }
 
     if (line2.length > options['wrap']) {
         line2 = wrap(line2, indent);
