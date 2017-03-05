@@ -108,25 +108,50 @@ cleaner.clean('Foo&nbsp;Bar', {'replace-nbsp': true}, function (html) {
 cleaner.clean('foo<span>bar</span>qux', {'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span>bar</span>qux');
 });
+
 // test that indent is not added when child is comment and break-around-comments is false
 cleaner.clean('foo<span><!-- bar --></span>qux', {'break-around-comments': false, 'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span><!-- bar --></span>qux');
 });
+
 // test that indent is added when child is comment and break-around-comments is true
 cleaner.clean('foo<span><!-- bar --></span>qux', {'break-around-comments': true, 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <!-- bar -->\n</span>\nqux');
 });
+
 // test that indent is not added when child tag is not included in break-around-tags
 cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': [], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo<span><div>bar</div></span>qux');
 });
+
 // test that indent is added when child tag is included in break-around-tags
 cleaner.clean('foo<span><div>bar</div></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <div>bar</div>\n</span>\nqux');
 });
+
 // test that indent is added when child tag is not included in break-around-tags but descendant is
 cleaner.clean('foo<span><span><div>bar</div></span></span>qux', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, 'foo\n<span>\n  <span>\n    <div>bar</div>\n  </span>\n</span>\nqux');
+});
+
+// test that indent is not added inside comment
+cleaner.clean('<!-- foo<span><div>bar</div></span>qux -->', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
+    assert.equal(html, '<!-- foo<span><div>bar</div></span>qux -->');
+});
+
+// test that indent is not added inside multiline comment
+cleaner.clean('<!--\nfoo<span><div>bar</div></span>qux\n-->', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
+    assert.equal(html, '<!--\nfoo<span><div>bar</div></span>qux\n-->');
+});
+
+// test that indent is not added after comment
+cleaner.clean('<!--[if IE 7]><div><![endif]--><div>foo</div>', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
+    assert.equal(html, '<!--[if IE 7]><div><![endif]-->\n<div>foo</div>');
+});
+
+// test that indent is not added after multiline comment
+cleaner.clean('<!--[if IE 7]>\n<div>\n<![endif]--><div>foo</div>', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
+    assert.equal(html, '<!--[if IE 7]>\n<div>\n<![endif]-->\n<div>foo</div>');
 });
 
 // wrap tests

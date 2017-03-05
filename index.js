@@ -334,16 +334,29 @@ function wrap(line, indent) {
 }
 
 function indent(html) {
-    var indentLevel = 0;
+    var indentLevel = 0,
+        inComment = false;
 
     return html.replace(/.*\n/g, function (line) {
         var openTags = [],
+            result,
             tagRegEx = /<\/?(\w+).*?>/g,
             tag,
-            tagName,
-            result;
+            tagName;
 
-        while (result = tagRegEx.exec(line)) {
+        if (line.lastIndexOf('<!--') > line.lastIndexOf('-->')) {
+            inComment = true;
+        } else if (line.indexOf('-->') != -1) {
+            inComment = false;
+        }
+
+        while (!inComment && (result = tagRegEx.exec(line))) {
+            // don't increase indent if tag is inside a comment
+            if (line.lastIndexOf('<!--', result.index) < result.index
+                    && line.indexOf('-->', result.index) > result.index) {
+                continue;
+            }
+
             tag = result[0];
             tagName = result[1];
 
