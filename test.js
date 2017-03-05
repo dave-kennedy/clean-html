@@ -24,17 +24,17 @@ cleaner.clean('<!DOCTYPE html>', function (html) {
     assert.equal(html, '<!DOCTYPE html>')
 });
 
-// test that tags are lowercased
+// test that tag is lowercased
 cleaner.clean('<A HREF="http://foo">bar</A>', function (html) {
     assert.equal(html, '<a href="http://foo">bar</a>');
 });
 
-// test that script tags are unchanged
+// test that script tag is unchanged
 cleaner.clean('<script type="text/javascript">console.log("foo");</script>', function (html) {
     assert.equal(html, '<script type="text/javascript">console.log("foo");</script>')
 });
 
-// test that style tags are unchanged
+// test that style tag is unchanged
 cleaner.clean('<style>a { color: red; }</style>', function (html) {
     assert.equal(html, '<style>a { color: red; }</style>')
 });
@@ -57,38 +57,38 @@ cleaner.clean('foo<div></div>bar', {'break-around-tags': ['div']}, function (htm
     assert.equal(html, 'foo\n<div></div>\nbar');
 });
 
-// test that attributes are not removed when not included in remove-attributes
+// test that attribute is not removed when not included in remove-attributes
 cleaner.clean('<span color="red">foo</span>', {'remove-attributes': []}, function (html) {
     assert.equal(html, '<span color="red">foo</span>');
 });
-// test that attributes are removed when included in remove-attributes
+// test that attribute is removed when included in remove-attributes
 cleaner.clean('<span color="red">foo</span>', {'remove-attributes': ['color']}, function (html) {
     assert.equal(html, '<span>foo</span>');
 });
 
-// test that comments are not removed when remove-comments is false
+// test that comment is not removed when remove-comments is false
 cleaner.clean('<!-- foo -->', {'remove-comments': false}, function (html) {
     assert.equal(html, '<!-- foo -->');
 });
-// test that comments are removed when remove-comments is true
+// test that comment is removed when remove-comments is true
 cleaner.clean('<!-- foo -->', {'remove-comments': true}, function (html) {
     assert.equal(html, '');
 });
 
-// test that empty tags are not removed when not included in remove-empty-tags
+// test that empty tag is not removed when not included in remove-empty-tags
 cleaner.clean('<p></p>', {'remove-empty-tags': []}, function (html) {
     assert.equal(html, '<p></p>');
 });
-// test that empty tags are removed when included in remove-empty-tags
+// test that empty tag is removed when included in remove-empty-tags
 cleaner.clean('<p></p>', {'remove-empty-tags': ['p']}, function (html) {
     assert.equal(html, '');
 });
 
-// test that tags are not removed when not included in remove-tags
+// test that tag is not removed when not included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': []}, function (html) {
     assert.equal(html, '<font face="arial">foo</font>');
 });
-// test that tags are removed when included in remove-tags
+// test that tag is removed and child is preserved when included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': ['font']}, function (html) {
     assert.equal(html, 'foo');
 });
