@@ -1,3 +1,11 @@
+1.4.2
+-----
+
+Hanging indent is now applied to wrapped lines.
+
+Multiline comments are now squashed into a single line, just like text. This
+makes wrapping them easier and simplifies how conditional comments are handled.
+
 1.4.1
 -----
 
