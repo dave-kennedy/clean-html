@@ -153,7 +153,7 @@ cleaner.clean('<!--[if IE 7]>\n<div>\n<![endif]--><div>foo</div>', {'break-aroun
 
 // test that long line is wrapped and indented
 cleaner.clean('<div><div>I prefer the concrete, the graspable, the proveable.</div></div>', {'wrap': 40}, function (html) {
-    assert.equal(html, '<div>\n  <div>I prefer the concrete, the\n  graspable, the proveable.</div>\n</div>');
+    assert.equal(html, '<div>\n  <div>I prefer the concrete, the\n      graspable, the proveable.</div>\n</div>');
 });
 
 // test that long line without whitespace is indented but not wrapped

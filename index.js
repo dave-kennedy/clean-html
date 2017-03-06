@@ -320,7 +320,7 @@ function wrap(line, indent) {
     }
 
     var line1 = line.substr(0, bound),
-        line2 = indent + line.substr(bound + 1);
+        line2 = indent + options['indent'].repeat(2) + line.substr(bound + 1);
 
     if (line1.trim().length == 0) {
         // there are no spaces in the line other than the indent
