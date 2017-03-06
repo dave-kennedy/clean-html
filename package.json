@@ -1,6 +1,6 @@
 {
   "name": "clean-html",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "HTML cleaner and beautifier",
   "main": "index.js",
   "bin": "cmd.js",
