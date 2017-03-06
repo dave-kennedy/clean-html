@@ -1,4 +1,16 @@
-1.3.9
+1.4.1
+-----
+
+Maximum call stack error when trying to wrap lines without spaces has been
+fixed.
+
+Support for conditional comments has been added.
+
+Trying to preserve CSS and JavaScript formatting is a pain, so style and
+script tags are no longer supported in this release. They will simply be
+removed from the output.
+
+1.4.0
 -----
 
 The license has been switched from ISC to [Unlicense](http://unlicense.org).
