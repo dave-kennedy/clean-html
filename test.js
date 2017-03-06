@@ -13,6 +13,9 @@ cleaner.clean('Foo  Bar', function (html) {
 cleaner.clean('Foo\nBar', function (html) {
     assert.equal(html, 'Foo Bar');
 });
+cleaner.clean('<!--\nFoo  Bar\n-->', function (html) {
+    assert.equal(html, '<!-- Foo Bar -->');
+});
 
 // test that output is trimmed
 cleaner.clean(' foo\n', function (html) {
@@ -134,31 +137,36 @@ cleaner.clean('<!-- foo<span><div>bar</div></span>qux -->', {'break-around-tags'
     assert.equal(html, '<!-- foo<span><div>bar</div></span>qux -->');
 });
 
-// test that indent is not added inside multiline comment
-cleaner.clean('<!--\nfoo<span><div>bar</div></span>qux\n-->', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, '<!--\nfoo<span><div>bar</div></span>qux\n-->');
-});
-
 // test that indent is not added after comment
 cleaner.clean('<!--[if IE 7]><div><![endif]--><div>foo</div>', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
     assert.equal(html, '<!--[if IE 7]><div><![endif]-->\n<div>foo</div>');
 });
 
-// test that indent is not added after multiline comment
-cleaner.clean('<!--[if IE 7]>\n<div>\n<![endif]--><div>foo</div>', {'break-around-tags': ['div'], 'indent': '  '}, function (html) {
-    assert.equal(html, '<!--[if IE 7]>\n<div>\n<![endif]-->\n<div>foo</div>');
-});
-
 // wrap tests
 
-// test that long line is wrapped and indented
+// test that long line is wrapped with hanging indent
+cleaner.clean('<div>I prefer the concrete, the graspable, the proveable.</div>', {'wrap': 40}, function (html) {
+    assert.equal(html, '<div>I prefer the concrete, the\n    graspable, the proveable.</div>');
+});
+
+// test that long line without whitespace is not wrapped
+cleaner.clean('<div>Iprefertheconcrete,thegraspable,theproveable.</div>', {'wrap': 40}, function (html) {
+    assert.equal(html, '<div>Iprefertheconcrete,thegraspable,theproveable.</div>');
+});
+
+// test that long line inside nested tag is wrapped with hanging indent
 cleaner.clean('<div><div>I prefer the concrete, the graspable, the proveable.</div></div>', {'wrap': 40}, function (html) {
     assert.equal(html, '<div>\n  <div>I prefer the concrete, the\n      graspable, the proveable.</div>\n</div>');
 });
 
-// test that long line without whitespace is indented but not wrapped
+// test that long line without whitespace inside nested tag is not wrapped
 cleaner.clean('<div><div>Iprefertheconcrete,thegraspable,theproveable.</div></div>', {'wrap': 40}, function (html) {
     assert.equal(html, '<div>\n  <div>Iprefertheconcrete,thegraspable,theproveable.</div>\n</div>');
+});
+
+// test that long comment is wrapped and indented
+cleaner.clean('<!-- I prefer the concrete, the graspable, the proveable. -->', {'wrap': 40}, function (html) {
+    assert.equal(html, '<!-- I prefer the concrete, the\n    graspable, the proveable. -->');
 });
 
 // end to end test

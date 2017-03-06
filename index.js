@@ -203,7 +203,7 @@ function renderComment(node) {
         return '';
     }
 
-    var comment = '<!--' + node.data + '-->';
+    var comment = '<!--' + node.data.replace(/\s+/g, ' ') + '-->';
 
     if (breakAround(node)) {
         return '\n' + comment + '\n';
@@ -336,8 +336,7 @@ function wrap(line, indent) {
 }
 
 function indent(html) {
-    var indentLevel = 0,
-        inComment = false;
+    var indentLevel = 0;
 
     return html.replace(/.*\n/g, function (line) {
         var openTags = [],
@@ -346,13 +345,7 @@ function indent(html) {
             tag,
             tagName;
 
-        if (line.lastIndexOf('<!--') > line.lastIndexOf('-->')) {
-            inComment = true;
-        } else if (line.indexOf('-->') != -1) {
-            inComment = false;
-        }
-
-        while (!inComment && (result = tagRegEx.exec(line))) {
+        while (result = tagRegEx.exec(line)) {
             // don't increase indent if tag is inside a comment
             if (line.lastIndexOf('<!--', result.index) < result.index
                     && line.indexOf('-->', result.index) > result.index) {
