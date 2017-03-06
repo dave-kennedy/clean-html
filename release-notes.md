@@ -1,3 +1,8 @@
+1.4.3
+-----
+
+Extra spaces are now removed from attribute values.
+
 1.4.2
 -----
 

@@ -1,4 +1,8 @@
 var htmlparser = require('htmlparser2'),
+    unsupportedTags = [
+        'script',
+        'style'
+    ],
     voidElements = [
         'area',
         'base',
@@ -77,10 +81,6 @@ function setup(opt) {
             'font'
         ],
         'replace-nbsp': false,
-        'unsupported-tags': [
-            'script',
-            'style'
-        ],
         'wrap': 120
     };
 
@@ -159,6 +159,10 @@ function isEmpty(node) {
     return !node.children.length || node.children.every(isEmpty);
 }
 
+function removeExtraSpace(text) {
+    return text.replace(/\s+/g, ' ');
+}
+
 function shouldRemove(node) {
     if (node.type == 'text') {
         return isEmpty(node);
@@ -180,7 +184,7 @@ function renderText(node) {
         return '';
     }
 
-    var text = node.data;
+    var text = removeExtraSpace(node.data);
 
     if (options['replace-nbsp']) {
         text = text.replace(/&nbsp;/g, ' ');
@@ -194,8 +198,7 @@ function renderText(node) {
         text = text.trimRight();
     }
 
-    // replace all whitespace characters with a single space
-    return text.replace(/\s+/g, ' ');
+    return text;
 }
 
 function renderComment(node) {
@@ -203,7 +206,7 @@ function renderComment(node) {
         return '';
     }
 
-    var comment = '<!--' + node.data.replace(/\s+/g, ' ') + '-->';
+    var comment = '<!--' + removeExtraSpace(node.data) + '-->';
 
     if (breakAround(node)) {
         return '\n' + comment + '\n';
@@ -213,7 +216,7 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
-    if (options['unsupported-tags'].indexOf(node.name) != -1) {
+    if (unsupportedTags.indexOf(node.name) != -1) {
         return '';
     }
 
@@ -229,7 +232,7 @@ function renderTag(node) {
 
     for (var attrib in node.attribs) {
         if (options['remove-attributes'].indexOf(attrib) == -1) {
-            openTag += ' ' + attrib + '="' + node.attribs[attrib] + '"';
+            openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
         }
     }
 
