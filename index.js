@@ -52,8 +52,6 @@ function setup(opt) {
             'link',
             'meta',
             'p',
-            'script',
-            'style',
             'table',
             'td',
             'title',
@@ -79,6 +77,10 @@ function setup(opt) {
             'font'
         ],
         'replace-nbsp': false,
+        'unsupported-tags': [
+            'script',
+            'style'
+        ],
         'wrap': 120
     };
 
@@ -180,10 +182,6 @@ function renderText(node) {
 
     var text = node.data;
 
-    if (node.parent && (node.parent.type == 'script' || node.parent.type == 'style')) {
-        return text;
-    }
-
     if (options['replace-nbsp']) {
         text = text.replace(/&nbsp;/g, ' ');
     }
@@ -215,6 +213,10 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
+    if (options['unsupported-tags'].indexOf(node.name) != -1) {
+        return '';
+    }
+
     if (shouldRemove(node)) {
         if (isEmpty(node)) {
             return '';

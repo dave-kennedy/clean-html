@@ -29,16 +29,6 @@ cleaner.clean('<A HREF="http://foo">bar</A>', function (html) {
     assert.equal(html, '<a href="http://foo">bar</a>');
 });
 
-// test that script tag is unchanged
-cleaner.clean('<script type="text/javascript">console.log("foo");</script>', function (html) {
-    assert.equal(html, '<script type="text/javascript">console.log("foo");</script>')
-});
-
-// test that style tag is unchanged
-cleaner.clean('<style>a { color: red; }</style>', function (html) {
-    assert.equal(html, '<style>a { color: red; }</style>')
-});
-
 // test that line breaks are not added around comments when break-around-comments is false
 cleaner.clean('foo<!-- bar -->qux', {'break-around-comments': false}, function (html) {
     assert.equal(html, 'foo<!-- bar -->qux');
@@ -91,6 +81,11 @@ cleaner.clean('<font face="arial">foo</font>', {'remove-tags': []}, function (ht
 // test that tag is removed and child is preserved when included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': ['font']}, function (html) {
     assert.equal(html, 'foo');
+});
+
+// test that unsupported tags are removed
+cleaner.clean('<script>foo</script>\n<style>bar</style>', function (html) {
+    assert.equal(html, '');
 });
 
 // test that non-breaking space is not replaced by a single space when replace-nbsp is false
