@@ -22,6 +22,11 @@ cleaner.clean(' foo\n', function (html) {
     assert.equal(html, 'foo');
 });
 
+// test that output is not trimmed in tags
+cleaner.clean('<p>I<strong> love</stong> Paris!</p>', function (html) {
+    assert.equal(html, '<p>I<strong> love Paris!</strong></p>');
+});
+
 // test that directive is unchanged
 cleaner.clean('<!DOCTYPE html>', function (html) {
     assert.equal(html, '<!DOCTYPE html>')
