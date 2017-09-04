@@ -117,7 +117,7 @@ Default: `'  '` (two spaces)
 
 Attributes to remove from markup.
 
-Type: Array  
+Type: Mixed Array (strings or RegExp pattern)
 Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'height', 'target', 'valign', 'width']`
 
 ### remove-comments
@@ -131,14 +131,14 @@ Default: `false`
 
 Tags to remove from markup if empty.
 
-Type: Array  
+Type: Mixed Array (strings or RegExp pattern)
 Default: `[]`
 
 ### remove-tags
 
 Tags to always remove from markup. Nested content is preserved.
 
-Type: Array  
+Type: Mixed Array (strings or RegExp pattern)
 Default: `['center', 'font']`
 
 ### replace-nbsp
