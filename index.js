@@ -172,11 +172,19 @@ function shouldRemove(node) {
         return options['remove-comments'] || isEmpty(node);
     }
 
-    if (options['remove-empty-tags'].indexOf(node.name) != -1) {
+    if (isListedInOptions('remove-empty-tags', node.name)) {
         return isEmpty(node);
     }
 
-    return options['remove-tags'].indexOf(node.name) != -1;
+    return isListedInOptions('remove-tags', node.name);
+}
+
+function isListedInOptions(optionsArrayName, name) {
+    var matches = options[optionsArrayName].filter(function(option) {
+        return typeof option !== 'string' && option.test(name) || option === name;
+    });
+
+    return !!matches.length;
 }
 
 function renderText(node) {
@@ -231,7 +239,7 @@ function renderTag(node) {
     var openTag = '<' + node.name;
 
     for (var attrib in node.attribs) {
-        if (options['remove-attributes'].indexOf(attrib) == -1) {
+        if (!isListedInOptions('remove-attributes', attrib)) {
             openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
         }
     }

@@ -58,6 +58,10 @@ cleaner.clean('<span color="red">foo</span>', {'remove-attributes': []}, functio
 cleaner.clean('<span color="red">foo</span>', {'remove-attributes': ['color']}, function (html) {
     assert.equal(html, '<span>foo</span>');
 });
+// test that attribute is removed when it matches at least one pattern included in remove-attributes
+cleaner.clean('<span _test-color="red">foo</span>', {'remove-attributes': [/_test-[a-z0-9-]+/i]}, function (html) {
+    assert.equal(html, '<span>foo</span>');
+});
 
 // test that comment is not removed when remove-comments is false
 cleaner.clean('<!-- foo -->', {'remove-comments': false}, function (html) {
@@ -76,6 +80,10 @@ cleaner.clean('<p></p>', {'remove-empty-tags': []}, function (html) {
 cleaner.clean('<p></p>', {'remove-empty-tags': ['p']}, function (html) {
     assert.equal(html, '');
 });
+// test that empty tag is removed when it matches at least one pattern included in remove-empty-tags
+cleaner.clean('<app-pam-pam-pam></app-pam-pam-pam>', {'remove-empty-tags': [/^app-.*/i]}, function (html) {
+    assert.equal(html, '');
+});
 
 // test that tag is not removed when not included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': []}, function (html) {
@@ -83,6 +91,10 @@ cleaner.clean('<font face="arial">foo</font>', {'remove-tags': []}, function (ht
 });
 // test that tag is removed and child is preserved when included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': ['font']}, function (html) {
+    assert.equal(html, 'foo');
+});
+// test that tag is removed and child is preserved when it matches at least one pattern included in remove-tags
+cleaner.clean('<app-test>foo</app-test>', {'remove-tags': [/app-.+/]}, function (html) {
     assert.equal(html, 'foo');
 });
 
