@@ -181,7 +181,7 @@ function shouldRemove(node) {
 
 function isListedInOptions(optionsArrayName, name) {
     var matches = options[optionsArrayName].filter(function(option) {
-        return typeof option !== 'string' && option.test(name) || option === name;
+        return option instanceof RegExp && option.test(name) || option === name;
     });
 
     return !!matches.length;
