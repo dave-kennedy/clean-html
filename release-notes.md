@@ -1,3 +1,9 @@
+1.5.0
+-----
+
+Regular expressions are now supported in the remove-attributes,
+remove-empty-tags and remove-tags options.
+
 1.4.3
 -----
 
