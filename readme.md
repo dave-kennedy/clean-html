@@ -134,6 +134,13 @@ Tags to remove from markup if empty.
 Type: Mixed Array (strings or RegExp pattern)  
 Default: `[]`
 
+### remove-empty-attributes
+
+An array of attributes to remove from the markup if their value is empty.
+
+Type: Mixed Array (strings or RegExp pattern)  
+Default: `['class', 'style', 'id']`
+
 ### remove-tags
 
 Tags to always remove from markup. Nested content is preserved.

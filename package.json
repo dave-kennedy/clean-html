@@ -1,6 +1,6 @@
 {
   "name": "clean-html",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "HTML cleaner and beautifier",
   "main": "index.js",
   "bin": "cmd.js",
@@ -24,6 +24,10 @@
     "tidy"
   ],
   "author": "Dave Kennedy <dave-kennedy@users.noreply.github.com> (http://github.com/dave-kennedy)",
+  "contributors": [{
+    "name": "castastrophe",
+    "url": "https://github.com/castastrophe"
+  }],
   "license": "Unlicense",
   "bugs": {
     "url": "https://github.com/dave-kennedy/clean-html/issues"

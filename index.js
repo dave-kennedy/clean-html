@@ -76,6 +76,11 @@ function setup(opt) {
         ],
         'remove-comments': false,
         'remove-empty-tags': [],
+        'remove-empty-attributes': [
+            'class',
+            'style',
+            'id'
+        ],
         'remove-tags': [
             'center',
             'font'
@@ -94,6 +99,7 @@ function setup(opt) {
     options['remove-attributes'] = opt['remove-attributes'] || options['remove-attributes'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
+    options['remove-empty-attributes'] = opt['remove-empty-attributes'] || options['remove-empty-attributes'];
     options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
     options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
     options['wrap'] = opt['wrap'] >= 0 ? opt['wrap'] : options['wrap'];
@@ -239,8 +245,13 @@ function renderTag(node) {
     var openTag = '<' + node.name;
 
     for (var attrib in node.attribs) {
-        if (!isListedInOptions('remove-attributes', attrib)) {
-            openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
+        if (!isListedInOptions('remove-attributes', attrib) && !(isListedInOptions('remove-empty-attributes', attrib) && node.attribs[attrib] === "")) {
+            openTag += ' ' + attrib;
+            // If the value exists
+            if(node.attribs[attrib] !== "") {
+                openTag += '="' + removeExtraSpace(node.attribs[attrib]) + '"';
+            }
+            // else allow for removal of empty attributes?
         }
     }
 

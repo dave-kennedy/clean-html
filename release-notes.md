@@ -1,3 +1,10 @@
+1.5.1
+-----
+
+Added new option -- remove-empty-attributes -- which can clean attributes,
+such as class="". Added default logic around print to avoid printing empty
+attributes.
+
 1.5.0
 -----
 

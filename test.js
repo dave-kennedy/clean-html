@@ -85,6 +85,27 @@ cleaner.clean('<app-pam-pam-pam></app-pam-pam-pam>', {'remove-empty-tags': [/^ap
     assert.equal(html, '');
 });
 
+// test that default attributes are removed when they are empty
+cleaner.clean('<span class="" data-boolean>foo</span>', {}, function (html) {
+    assert.equal(html, '<span data-boolean>foo</span>');
+});
+// test that empty attribute is not removed when not included in remove-empty-attribute, use implied empty string
+cleaner.clean('<span data-boolean>foo</span>', {'remove-empty-attributes': []}, function (html) {
+    assert.equal(html, '<span data-boolean>foo</span>');
+});
+// test that empty attribute is not removed when not included in remove-empty-attribute, use literal empty string
+cleaner.clean('<span data-boolean="">foo</span>', {'remove-empty-attributes': []}, function (html) {
+    assert.equal(html, '<span data-boolean>foo</span>');
+});
+// test that empty attribute is removed when included in remove-empty-attribute
+cleaner.clean('<span class="">foo</span>', {'remove-empty-attributes': ['class']}, function (html) {
+    assert.equal(html, '<span>foo</span>');
+});
+// test that empty attribute is removed when it matches at least one pattern included in remove-empty-attribute
+cleaner.clean('<span _test-color="">foo</span>', {'remove-empty-attributes': [/_test-[a-z0-9-]+/i]}, function (html) {
+    assert.equal(html, '<span>foo</span>');
+});
+
 // test that tag is not removed when not included in remove-tags
 cleaner.clean('<font face="arial">foo</font>', {'remove-tags': []}, function (html) {
     assert.equal(html, '<font face="arial">foo</font>');
