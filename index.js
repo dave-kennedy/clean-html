@@ -404,10 +404,10 @@ function clean(html, opt, callback) {
             throw err;
         }
 
-        var html = render(dom);
-        html = indent(html).trim();
+        var output = render(dom);
+        output = indent(output).trim();
 
-        callback(html);
+        callback(output);
     });
 
     var parser = new htmlparser.Parser(handler);
