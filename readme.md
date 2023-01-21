@@ -92,6 +92,16 @@ Sanity restored!
 
 ## Options
 
+### allow-attributes-without-values
+
+Allows attributes to be output without values.  For example, `checked` instead
+of `checked=""`.
+
+Please set to `true` for Angular components or for `<input>` elements.
+
+Type: Boolean
+Default: `false`
+
 ### break-around-comments
 
 Adds line breaks before and after comments.
@@ -112,6 +122,24 @@ The string to use for indentation. e.g., a tab character or one or more spaces.
 
 Type: String  
 Default: `'  '` (two spaces)
+
+### lower-case-tags
+
+Converts all tag names to lower case.
+
+Please set to `false` for Angular components.
+
+Type: Boolean
+Default: `true`
+
+### lower-case-attribute-names
+
+Converts all attribute names to lower case.
+
+Please set to `false` for Angular components.
+
+Type: Boolean
+Default: `true`
 
 ### remove-attributes
 

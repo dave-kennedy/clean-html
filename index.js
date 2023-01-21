@@ -39,6 +39,7 @@ var htmlparser = require('htmlparser2'),
 
 function setup(opt) {
     options = {
+        'allow-attributes-without-values': false,
         'break-around-comments': true,
         'break-around-tags': [
             'blockquote',
@@ -62,6 +63,8 @@ function setup(opt) {
             'tr'
         ],
         'indent': '  ',
+        'lower-case-tags': true,
+        'lower-case-attribute-names': true,
         'remove-attributes': [
             'align',
             'bgcolor',
@@ -88,9 +91,12 @@ function setup(opt) {
         return;
     }
 
+    options['allow-attributes-without-values'] = opt['allow-attributes-without-values'] === true ? true : false;
     options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
     options['indent'] = opt['indent'] || options['indent'];
+    options['lower-case-tags'] = opt['lower-case-tags'] === false ? false : true;
+    options['lower-case-attribute-names'] = opt['lower-case-attribute-names'] === false ? false : true;
     options['remove-attributes'] = opt['remove-attributes'] || options['remove-attributes'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
@@ -240,7 +246,11 @@ function renderTag(node) {
 
     for (var attrib in node.attribs) {
         if (!isListedInOptions('remove-attributes', attrib)) {
-            openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
+            if (!node.attribs[attrib] && options['allow-attributes-without-values']) {
+              openTag += ' ' + attrib;
+            } else {
+              openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
+            }
         }
     }
 
@@ -410,7 +420,12 @@ function clean(html, opt, callback) {
         callback(output);
     });
 
-    var parser = new htmlparser.Parser(handler);
+    var parserOptions = {
+        lowerCaseTags: options['lower-case-tags'],
+        lowerCaseAttributeNames: options['lower-case-attribute-names'],
+    };
+
+    var parser = new htmlparser.Parser(handler, parserOptions);
     parser.write(html);
     parser.done();
 }
