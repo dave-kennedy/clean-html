@@ -1,28 +1,32 @@
 #!/usr/bin/env node
 
-var cleaner = require('./index.js'),
-    fs = require('fs'),
-    parseArgs = require('minimist'),
-    argv = parseArgs(process.argv.slice(2)),
-    filename = argv['_'][0],
-    inPlace = getOptAsBool(argv['in-place']),
-    options = {
-        'allow-attributes-without-values': getOptAsBool(argv['allow-attributes-without-values']),
-        'break-around-comments': getOptAsBool(argv['break-around-comments']),
-        'break-around-tags': getOptAsArray(argv['break-around-tags']),
-        'decode-entities': getOptAsBool(argv['decode-entities']),
-        'indent': argv['indent'],
-        'lower-case-tags': getOptAsBool(argv['lower-case-tags']),
-        'lower-case-attribute-names': getOptAsBool(argv['lower-case-attribute-names']),
-        'remove-attributes': getOptAsArray(argv['remove-attributes']),
-        'remove-comments': getOptAsBool(argv['remove-comments']),
-        'remove-empty-tags': getOptAsArray(argv['remove-empty-tags']),
-        'remove-tags': getOptAsArray(argv['remove-tags']),
-        'wrap': getOptAsInt(argv['wrap']),
-        'add-break-around-tags': getOptAsArray(argv['add-break-around-tags']),
-        'add-remove-attributes': getOptAsArray(argv['add-remove-attributes']),
-        'add-remove-tags': getOptAsArray(argv['add-remove-tags'])
-    };
+const fs = require('node:fs');
+
+const parseArgs = require('minimist');
+
+const cleaner = require('./index.js');
+
+const argv = parseArgs(process.argv.slice(2));
+const filename = argv['_'][0];
+const inPlace = getOptAsBool(argv['in-place']);
+
+const options = {
+    'allow-attributes-without-values': getOptAsBool(argv['allow-attributes-without-values']),
+    'break-around-comments': getOptAsBool(argv['break-around-comments']),
+    'break-around-tags': getOptAsArray(argv['break-around-tags']),
+    'decode-entities': getOptAsBool(argv['decode-entities']),
+    'indent': argv['indent'],
+    'lower-case-tags': getOptAsBool(argv['lower-case-tags']),
+    'lower-case-attribute-names': getOptAsBool(argv['lower-case-attribute-names']),
+    'remove-attributes': getOptAsArray(argv['remove-attributes']),
+    'remove-comments': getOptAsBool(argv['remove-comments']),
+    'remove-empty-tags': getOptAsArray(argv['remove-empty-tags']),
+    'remove-tags': getOptAsArray(argv['remove-tags']),
+    'wrap': getOptAsInt(argv['wrap']),
+    'add-break-around-tags': getOptAsArray(argv['add-break-around-tags']),
+    'add-remove-attributes': getOptAsArray(argv['add-remove-attributes']),
+    'add-remove-tags': getOptAsArray(argv['add-remove-tags'])
+};
 
 function getOptAsArray(opt) {
     if (opt === undefined) {
@@ -30,11 +34,9 @@ function getOptAsArray(opt) {
     }
 
     if (Array.isArray(opt)) {
-        return opt.map(function (o) {
-            return o.split(',');
-        }).reduce(function (prev, curr) {
-            return prev.concat(curr);
-        });
+        return opt
+            .map(o => o.split(','))
+            .reduce((prev, curr) => prev.concat(curr));
     }
 
     return opt.split(',');
@@ -53,7 +55,7 @@ function getOptAsInt(opt) {
         return undefined;
     }
 
-    var val = parseInt(opt);
+    const val = parseInt(opt);
 
     return isNaN(val) ? undefined : val;
 }

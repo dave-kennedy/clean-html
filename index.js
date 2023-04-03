@@ -1,41 +1,44 @@
-var htmlparser = require('htmlparser2'),
-    unsupportedTags = [
-        'script',
-        'style'
-    ],
-    voidElements = [
-        'area',
-        'base',
-        'basefont',
-        'br',
-        'col',
-        'command',
-        'embed',
-        'frame',
-        'hr',
-        'img',
-        'input',
-        'isindex',
-        'keygen',
-        'link',
-        'meta',
-        'param',
-        'source',
-        'track',
-        'wbr',
+const htmlparser = require('htmlparser2');
 
-        // common self closing svg elements
-        'circle',
-        'ellipse',
-        'line',
-        'path',
-        'polygon',
-        'polyline',
-        'rect',
-        'stop',
-        'use'
-    ],
-    options = {};
+const unsupportedTags = [
+    'script',
+    'style'
+];
+
+const voidElements = [
+    'area',
+    'base',
+    'basefont',
+    'br',
+    'col',
+    'command',
+    'embed',
+    'frame',
+    'hr',
+    'img',
+    'input',
+    'isindex',
+    'keygen',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
+
+    // common self closing svg elements
+    'circle',
+    'ellipse',
+    'line',
+    'path',
+    'polygon',
+    'polyline',
+    'rect',
+    'stop',
+    'use'
+];
+
+let options = {};
 
 function setup(opt) {
     options = {
@@ -130,7 +133,7 @@ function breakAround(node) {
         return options['break-around-comments'];
     }
 
-    if (options['break-around-tags'].indexOf(node.name) != -1) {
+    if (options['break-around-tags'].includes(node.name)) {
         return true;
     }
 
@@ -182,11 +185,9 @@ function shouldRemove(node) {
 }
 
 function isListedInOptions(optionsArrayName, name) {
-    var matches = options[optionsArrayName].filter(function(option) {
+    return options[optionsArrayName].some(option => {
         return option instanceof RegExp && option.test(name) || option === name;
     });
-
-    return !!matches.length;
 }
 
 function renderText(node) {
@@ -194,7 +195,7 @@ function renderText(node) {
         return '';
     }
 
-    var text = removeExtraSpace(node.data);
+    let text = removeExtraSpace(node.data);
 
     if (!node.prev || breakAround(node.prev)) {
         text = text.trimLeft();
@@ -212,7 +213,7 @@ function renderComment(node) {
         return '';
     }
 
-    var comment = '<!--' + removeExtraSpace(node.data) + '-->';
+    const comment = '<!--' + removeExtraSpace(node.data) + '-->';
 
     if (breakAround(node)) {
         return '\n' + comment + '\n';
@@ -222,7 +223,7 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
-    if (unsupportedTags.indexOf(node.name) != -1) {
+    if (unsupportedTags.includes(node.name)) {
         return '';
     }
 
@@ -234,21 +235,21 @@ function renderTag(node) {
         return render(node.children);
     }
 
-    var openTag = '<' + node.name;
+    let openTag = '<' + node.name;
 
-    for (var attrib in node.attribs) {
+    for (let attrib in node.attribs) {
         if (!isListedInOptions('remove-attributes', attrib)) {
             if (!node.attribs[attrib] && options['allow-attributes-without-values']) {
               openTag += ' ' + attrib;
             } else {
-              openTag += ' ' + attrib + '="' + removeExtraSpace(node.attribs[attrib]) + '"';
+              openTag += ` ${attrib}="${removeExtraSpace(node.attribs[attrib])}"`;
             }
         }
     }
 
     openTag += '>';
 
-    if (voidElements.indexOf(node.name) != -1) {
+    if (voidElements.includes(node.name)) {
         if (breakAround(node)) {
             return '\n' + openTag + '\n';
         }
@@ -256,7 +257,7 @@ function renderTag(node) {
         return openTag;
     }
 
-    var closeTag = '</' + node.name + '>';
+    let closeTag = '</' + node.name + '>';
 
     if (breakAround(node)) {
         openTag = '\n' + openTag;
@@ -276,9 +277,9 @@ function renderDirective(node) {
 }
 
 function render(nodes) {
-    var html = '';
+    let html = '';
 
-    nodes.forEach(function (node) {
+    nodes.forEach(node => {
         if (node.type == 'root') {
             html += render(node.children);
             return;
@@ -307,9 +308,9 @@ function render(nodes) {
 }
 
 function getIndent(indentLevel) {
-    var indent = '';
+    let indent = '';
 
-    for (var i = 0; i < indentLevel; i++) {
+    for (let i = 0; i < indentLevel; i++) {
         indent += options['indent'];
     }
 
@@ -318,7 +319,7 @@ function getIndent(indentLevel) {
 
 function wrap(line, indent) {
     // find the last space before the column limit
-    var bound = line.lastIndexOf(' ', options['wrap']);
+    let bound = line.lastIndexOf(' ', options['wrap']);
 
     if (bound == -1) {
         // there are no spaces before the colum limit
@@ -332,8 +333,8 @@ function wrap(line, indent) {
         }
     }
 
-    var line1 = line.substr(0, bound),
-        line2 = indent + options['indent'].repeat(2) + line.substr(bound + 1);
+    const line1 = line.substr(0, bound);
+    let line2 = indent + options['indent'].repeat(2) + line.substr(bound + 1);
 
     if (line1.trim().length == 0) {
         // there are no spaces in the line other than the indent
@@ -349,30 +350,28 @@ function wrap(line, indent) {
 }
 
 function indent(html) {
-    var indentLevel = 0;
+    let indentLevel = 0;
 
-    return html.replace(/.*\n/g, function (line) {
-        var openTags = [],
-            result,
-            tagRegEx = /<\/?(\w+).*?>/g,
-            tag,
-            tagName;
+    return html.replace(/.*\n/g, line => {
+        let tagMatch = null;
+        const tagRegEx = /<\/?(\w+).*?>/g;
+        const openTags = [];
 
-        while (result = tagRegEx.exec(line)) {
+        while (tagMatch = tagRegEx.exec(line)) {
             // don't increase indent if tag is inside a comment
-            if (line.lastIndexOf('<!--', result.index) < result.index
-                    && line.indexOf('-->', result.index) > result.index) {
+            if (line.lastIndexOf('<!--', tagMatch.index) < tagMatch.index
+                    && line.indexOf('-->', tagMatch.index) > tagMatch.index) {
                 continue;
             }
 
-            tag = result[0];
-            tagName = result[1];
+            const tag = tagMatch[0];
+            const tagName = tagMatch[1];
 
-            if (voidElements.indexOf(tagName) != -1) {
+            if (voidElements.includes(tagName)) {
                 continue;
             }
 
-            if (tag.indexOf('</') == -1) {
+            if (!tag.startsWith('</')) {
                 openTags.push(tag);
                 indentLevel++;
             } else {
@@ -381,7 +380,7 @@ function indent(html) {
             }
         }
 
-        var indent = getIndent(indentLevel - openTags.length);
+        const indent = getIndent(indentLevel - openTags.length);
 
         line = indent + line;
 
@@ -401,28 +400,22 @@ function clean(html, opt, callback) {
 
     setup(opt);
 
-    var handler = new htmlparser.DomHandler(function (err, dom) {
+    const handler = new htmlparser.DomHandler((err, dom) => {
         if (err) {
             throw err;
         }
 
-        var output = render(dom);
-        output = indent(output).trim();
-
-        callback(output);
+        callback(indent(render(dom)).trim());
     });
 
-    var parserOptions = {
+    const parser = new htmlparser.Parser(handler, {
         decodeEntities: options['decode-entities'],
         lowerCaseTags: options['lower-case-tags'],
         lowerCaseAttributeNames: options['lower-case-attribute-names'],
-    };
+    });
 
-    var parser = new htmlparser.Parser(handler, parserOptions);
     parser.write(html);
     parser.end();
 }
 
-module.exports = {
-    clean: clean
-};
+module.exports = {clean};
