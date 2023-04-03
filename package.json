@@ -5,10 +5,9 @@
   "main": "index.js",
   "bin": "cmd.js",
   "dependencies": {
-    "htmlparser2": "^3.8.2",
-    "minimist": "^1.1.1"
+    "htmlparser2": "^8.0.2",
+    "minimist": "^1.2.8"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "node test.js"
   },

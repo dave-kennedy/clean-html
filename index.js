@@ -421,13 +421,14 @@ function clean(html, opt, callback) {
     });
 
     var parserOptions = {
+        decodeEntities: false,
         lowerCaseTags: options['lower-case-tags'],
         lowerCaseAttributeNames: options['lower-case-attribute-names'],
     };
 
     var parser = new htmlparser.Parser(handler, parserOptions);
     parser.write(html);
-    parser.done();
+    parser.end();
 }
 
 module.exports = {
