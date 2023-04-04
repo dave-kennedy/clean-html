@@ -307,16 +307,6 @@ function render(nodes) {
     return html.replace(/\n+/g, '\n');
 }
 
-function getIndent(indentLevel) {
-    let indent = '';
-
-    for (let i = 0; i < indentLevel; i++) {
-        indent += options['indent'];
-    }
-
-    return indent;
-}
-
 function wrap(line, indent) {
     // find the last space before the column limit
     let bound = line.lastIndexOf(' ', options['wrap']);
@@ -351,45 +341,31 @@ function wrap(line, indent) {
 
 function indent(html) {
     let indentLevel = 0;
+    const openTagRe = /^<(\w+)[^>]*>$/;
+    const closeTagRe = /^<\/(\w+)>$/;
 
-    return html.replace(/.*\n/g, line => {
-        let tagMatch = null;
-        const tagRegEx = /<\/?(\w+).*?>/g;
-        const openTags = [];
+    return html.split('\n').map(line => {
+        const closeTagMatch = line.match(closeTagRe);
 
-        while (tagMatch = tagRegEx.exec(line)) {
-            // don't increase indent if tag is inside a comment
-            if (line.lastIndexOf('<!--', tagMatch.index) < tagMatch.index
-                    && line.indexOf('-->', tagMatch.index) > tagMatch.index) {
-                continue;
-            }
-
-            const tag = tagMatch[0];
-            const tagName = tagMatch[1];
-
-            if (voidElements.includes(tagName)) {
-                continue;
-            }
-
-            if (!tag.startsWith('</')) {
-                openTags.push(tag);
-                indentLevel++;
-            } else {
-                openTags.pop();
-                indentLevel--;
-            }
+        if (closeTagMatch) {
+            indentLevel--;
         }
 
-        const indent = getIndent(indentLevel - openTags.length);
+        const indent = options['indent'].repeat(indentLevel);
+        const indented = indent + line;
 
-        line = indent + line;
+        const openTagMatch = line.match(openTagRe);
 
-        if (options['wrap'] && line.length > options['wrap']) {
-            line = wrap(line, indent);
+        if (openTagMatch && !voidElements.includes(openTagMatch[1])) {
+            indentLevel++;
         }
 
-        return line;
-    });
+        if (options['wrap'] && indented.length > options['wrap']) {
+            return wrap(indented, indent);
+        }
+
+        return indented;
+    }).join('\n');
 }
 
 function clean(html, opt, callback) {
