@@ -8,6 +8,7 @@ const util = require('node:util');
 const cleaner = require('./index.js');
 
 const results = [];
+const tests = [];
 
 function logFail(message) {
     return console.error(`\x1b[31m${message}\x1b[0m`);
@@ -17,7 +18,11 @@ function logPass(message) {
     return console.log(`\x1b[32m${message}\x1b[0m`);
 }
 
-function test(description, callback) {
+function registerTest(description, callback) {
+    tests.push({description, callback});
+}
+
+function runTest(description, callback) {
     try {
         callback();
     } catch (error) {
@@ -42,6 +47,19 @@ function test(description, callback) {
     results.push({message, result: 'pass'});
 }
 
+function runTests(filter) {
+    const filteredTests = tests.filter(test => !filter || filter(test));
+
+    if (filteredTests.length === 0) {
+        logFail('No tests satisfy filter');
+        process.exit(1);
+    }
+
+    for (const test of filteredTests) {
+        runTest(test.description, test.callback);
+    }
+}
+
 function summarizeResults() {
     const numPassed = results.filter(r => r.result == 'pass').length;
     const numFailed = results.filter(r => r.result == 'fail').length;
@@ -53,6 +71,10 @@ function summarizeResults() {
     if (numFailed > 0) {
         logFail(`Failed: ${numFailed}`);
     }
+}
+
+function test(description, callback) {
+    registerTest(description, callback);
 }
 
 test('text is unchanged', () => {
@@ -423,5 +445,14 @@ test('command line read from file and write to file in place', () => {
         fs.rmSync(tempDir, {recursive: true});
     }
 });
+
+const args = process.argv.slice(2);
+
+if (args.length > 0) {
+    const argPatterns = args.map(arg => new RegExp(arg));
+    runTests((test) => argPatterns.some(pattern => pattern.test(test.description)));
+} else {
+    runTests();
+}
 
 summarizeResults();
