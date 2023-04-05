@@ -179,6 +179,34 @@ test('attribute name is not lowercased when lower-case-attribute-names is false'
     });
 });
 
+test('tag is not preserved when not included in preserve-tags', () => {
+    const input = `<script>
+	function sayHello() {
+		console.log('Hello, World!');
+	}
+
+	sayHello();
+    </script>`;
+
+    cleaner.clean(input, {'preserve-tags': []}, output => {
+        assert.notEqual(output, input);
+    });
+});
+
+test('tag is preserved when included in preserve-tags', () => {
+    const input = `<script>
+	function sayHello() {
+		console.log('Hello, World!');
+	}
+
+	sayHello();
+    </script>`;
+
+    cleaner.clean(input, {'preserve-tags': ['script']}, output => {
+        assert.equal(output, input);
+    });
+});
+
 test('attribute is not removed when not included in remove-attributes', () => {
     cleaner.clean('<span color="red">foo</span>', {'remove-attributes': []}, html => {
         assert.equal(html, '<span color="red">foo</span>');
@@ -242,12 +270,6 @@ test('tag is removed and child is preserved when included in remove-tags', () =>
 test('tag is removed and child is preserved when it matches at least one pattern included in remove-tags', () => {
     cleaner.clean('<app-test>foo</app-test>', {'remove-tags': [/app-.+/]}, html => {
         assert.equal(html, 'foo');
-    });
-});
-
-test('unsupported tags are removed', () => {
-    cleaner.clean('<script>foo</script>\n<style>bar</style>', html => {
-        assert.equal(html, '');
     });
 });
 

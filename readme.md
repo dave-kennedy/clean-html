@@ -112,7 +112,7 @@ Default: `true`
 
 Tags that should have line breaks added before and after.
 
-Type: Array  
+Type: Array of strings  
 Default: `['body', 'blockquote', 'br', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'link', 'meta', 'p', 'table', 'title', 'td', 'tr']`
 
 ### decode-entities
@@ -147,11 +147,18 @@ Please set to `false` for Angular components.
 Type: Boolean  
 Default: `true`
 
+### preserve-tags
+
+Tags that should be left alone. i.e., content inside these tags will not be formatted, indented, etc.
+
+Type: Array of strings  
+Default: `['script', 'style']`
+
 ### remove-attributes
 
 Attributes to remove from markup.
 
-Type: Mixed Array (strings or RegExp pattern)  
+Type: Array of strings or regular expressions  
 Default: `['align', 'bgcolor', 'border', 'cellpadding', 'cellspacing', 'color', 'height', 'target', 'valign', 'width']`
 
 ### remove-comments
@@ -165,14 +172,14 @@ Default: `false`
 
 Tags to remove from markup if empty.
 
-Type: Mixed Array (strings or RegExp pattern)  
+Type: Array of strings or regular expressions  
 Default: `[]`
 
 ### remove-tags
 
 Tags to always remove from markup. Nested content is preserved.
 
-Type: Mixed Array (strings or RegExp pattern)  
+Type: Array of strings or regular expressions  
 Default: `['center', 'font']`
 
 ### wrap
@@ -190,21 +197,21 @@ These options exist for your convenience.
 
 Additional tags to include in `break-around-tags`.
 
-Type: Array  
+Type: Array of strings  
 Default: `null`
 
 ### add-remove-attributes
 
 Additional attributes to include in `remove-attributes`.
 
-Type: Array  
+Type: Array of strings  
 Default: `null`
 
 ### add-remove-tags
 
 Additional tags to include in `remove-tags`.
 
-Type: Array  
+Type: Array of strings  
 Default: `null`
 
 ## Global installation

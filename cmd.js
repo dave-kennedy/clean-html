@@ -18,6 +18,7 @@ const options = {
     'indent': argv['indent'],
     'lower-case-tags': getOptAsBool(argv['lower-case-tags']),
     'lower-case-attribute-names': getOptAsBool(argv['lower-case-attribute-names']),
+    'preserve-tags': getOptAsArray(argv['preserve-tags']),
     'remove-attributes': getOptAsArray(argv['remove-attributes']),
     'remove-comments': getOptAsBool(argv['remove-comments']),
     'remove-empty-tags': getOptAsArray(argv['remove-empty-tags']),

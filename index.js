@@ -1,10 +1,5 @@
 const htmlparser = require('htmlparser2');
 
-const unsupportedTags = [
-    'script',
-    'style'
-];
-
 const voidElements = [
     'area',
     'base',
@@ -69,6 +64,10 @@ function setup(opt) {
         'indent': '  ',
         'lower-case-tags': true,
         'lower-case-attribute-names': true,
+        'preserve-tags': [
+            'script',
+            'style'
+        ],
         'remove-attributes': [
             'align',
             'bgcolor',
@@ -101,6 +100,7 @@ function setup(opt) {
     options['indent'] = opt['indent'] || options['indent'];
     options['lower-case-tags'] = opt['lower-case-tags'] === false ? false : true;
     options['lower-case-attribute-names'] = opt['lower-case-attribute-names'] === false ? false : true;
+    options['preserve-tags'] = opt['preserve-tags'] || options['preserve-tags'];
     options['remove-attributes'] = opt['remove-attributes'] || options['remove-attributes'];
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
@@ -223,10 +223,6 @@ function renderComment(node) {
 }
 
 function renderTag(node) {
-    if (unsupportedTags.includes(node.name)) {
-        return '';
-    }
-
     if (shouldRemove(node)) {
         if (isEmpty(node)) {
             return '';
@@ -368,6 +364,26 @@ function indent(html) {
     }).join('\n');
 }
 
+const preserveTagReplacements = {};
+
+function preserveTags(html) {
+    const tagPattern = options['preserve-tags'].join('|');
+    const re = new RegExp(`<(?:${tagPattern})[^>]*>.*?<\/(?:${tagPattern})>`, 'gs');
+
+    return html.replace(re, (match, offset) => {
+        preserveTagReplacements[offset] = match;
+        return `<meta name="clean-html-replacement" offset="${offset}">`;
+    });
+}
+
+function undoPreserveTags(html) {
+    const re = /<meta name="clean-html-replacement" offset="(\d+)">/g;
+
+    return html.replace(re, (_, offset) => {
+        return preserveTagReplacements[offset];
+    });
+}
+
 function clean(html, opt, callback) {
     if (typeof opt == 'function') {
         callback = opt;
@@ -381,7 +397,13 @@ function clean(html, opt, callback) {
             throw err;
         }
 
-        callback(indent(render(dom)).trim());
+        callback(
+            undoPreserveTags(
+                indent(
+                    render(dom)
+                ).trim()
+            )
+        );
     });
 
     const parser = new htmlparser.Parser(handler, {
@@ -390,7 +412,10 @@ function clean(html, opt, callback) {
         lowerCaseAttributeNames: options['lower-case-attribute-names'],
     });
 
-    parser.write(html);
+    parser.write(
+        preserveTags(html)
+    );
+
     parser.end();
 }
 
