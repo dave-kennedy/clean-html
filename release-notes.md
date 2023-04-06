@@ -1,8 +1,20 @@
+2.0.0
+-----
+
+* New options to prevent clobbering Angular files, thanks to @joeyparrish:
+  * allow-attributes-without-values
+  * lower-case-tags
+  * lower-case-attribute-names
+* I'm not sure when the CLI broke but it works again.
+* The replace-nbsp option has been renamed to decode-entities.
+* Script and style tags are no longer removed with the new preserve-tags option.
+  Fixes #12, #13 and #19.
+
 1.5.0
 -----
 
 Regular expressions are now supported in the remove-attributes,
-remove-empty-tags and remove-tags options.
+remove-empty-tags and remove-tags options. Thanks, @smnbbrv!
 
 1.4.3
 -----
@@ -46,7 +58,7 @@ Up until now, this thing really only supported cleaning fragments of HTML. If
 you tried to feed it an entire HTML page (with doctype declaration, style
 tags, script tags, etc.) it would blow up.
 
-Thanks in part to Ronan Drouglazet, this embarassing oversight has been
+Thanks in part to @RonanDrouglazet, this embarassing oversight has been
 addressed. However, I have no intention of turning this into a CSS or
 JavaScript cleaner/formatter. Anything found within a style or script tag will
 be output as is.
