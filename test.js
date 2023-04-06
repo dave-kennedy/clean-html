@@ -1,5 +1,9 @@
 var assert = require('assert'),
-    cleaner = require('./index.js');
+    childProcess = require('child_process'),
+    cleaner = require('./index.js'),
+    fs = require('fs'),
+    os = require('os'),
+    path = require('path');
 
 // test that text is unchanged
 cleaner.clean('Foo Bar', function (html) {
@@ -203,21 +207,13 @@ cleaner.clean('<!-- I prefer the concrete, the graspable, the proveable. -->', {
     assert.equal(html, '<!-- I prefer the concrete, the\n    graspable, the proveable. -->');
 });
 
-// end to end test
-var input = `<table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr>
-          <td height="31"><b>Currently we have these articles available:</b>
+// command line tests
 
-        <blockquote>
-              <p><a href="foo.html">The History of Foo</a><br />    
-                An <span color="red">informative</span> piece  of <font face="arial">information</font>.</p>
-              <p><A HREF="bar.html">A Horse Walked Into a Bar</A><br/> The bartender said
-                "Why the long face?"</p>
-	</blockquote>
-          </td>
-        </tr>
-      </table>`;
-var expected = `<table>
+// test command line read from stdin and write to stdout
+(function () {
+    var input = fs.readFileSync('test.html', 'utf8');
+
+    var expected = `<table>
   <tr>
     <td>
       <b>Currently we have these articles available:</b>
@@ -235,9 +231,95 @@ var expected = `<table>
       </blockquote>
     </td>
   </tr>
-</table>`;
-cleaner.clean(input, function (actual) {
-    assert.equal(expected, actual);
-});
+</table>\n`;
+
+    var actual = childProcess.execFileSync('node', ['cmd.js'], {encoding: 'utf8', input: input});
+    assert.equal(actual, expected);
+}());
+
+// test command line read from file and write to stdout
+(function () {
+    var expected = `<table>
+  <tr>
+    <td>
+      <b>Currently we have these articles available:</b>
+      <blockquote>
+        <p>
+          <a href="foo.html">The History of Foo</a>
+          <br>
+          An <span>informative</span> piece of information.
+        </p>
+        <p>
+          <a href="bar.html">A Horse Walked Into a Bar</a>
+          <br>
+          The bartender said "Why the long face?"
+        </p>
+      </blockquote>
+    </td>
+  </tr>
+</table>\n`;
+
+    var actual = childProcess.execFileSync('node', ['cmd.js', 'test.html'], {encoding: 'utf8'});
+    assert.equal(actual, expected);
+}());
+
+// test command line read from file and write to stdout with options
+(function () {
+    var expected = `<b>Currently we have these articles available:</b>
+<p>
+  <a href="foo.html">The History of Foo</a>
+  <br>
+  An <span>informative</span> piece of information.
+</p>
+<p>
+  <a href="bar.html">A Horse Walked Into a Bar</a>
+  <br>
+  The bartender said "Why the long face?"
+</p>\n`;
+
+    var actual = childProcess.execFileSync(
+        'node',
+        ['cmd.js', 'test.html', '--add-remove-tags', 'table,tr,td,blockquote'],
+        {encoding: 'utf8'}
+    );
+
+    assert.equal(actual, expected);
+}());
+
+// test command line read from file and write to file in place
+(function () {
+    var expected = `<table>
+  <tr>
+    <td>
+      <b>Currently we have these articles available:</b>
+      <blockquote>
+        <p>
+          <a href="foo.html">The History of Foo</a>
+          <br>
+          An <span>informative</span> piece of information.
+        </p>
+        <p>
+          <a href="bar.html">A Horse Walked Into a Bar</a>
+          <br>
+          The bartender said "Why the long face?"
+        </p>
+      </blockquote>
+    </td>
+  </tr>
+</table>\n`;
+
+    try {
+        var tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'clean-html-'));
+        var tempFile = path.join(tempDir, 'test.html');
+        fs.copyFileSync('test.html', tempFile, fs.constants.COPYFILE_EXCL);
+
+        childProcess.execFileSync('node', ['cmd.js', tempFile, '--in-place']);
+
+        var actual = fs.readFileSync(tempFile, 'utf8');
+        assert.equal(actual, expected);
+    } finally {
+        fs.rmSync(tempDir, {recursive: true});
+    }
+}());
 
 console.log('all tests passed');

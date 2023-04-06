@@ -59,39 +59,29 @@ function getOptAsInt(opt) {
 }
 
 function read(filename, callback) {
-    if (filename) {
-        return fs.readFile(filename, function (err, data) {
-            if (err) {
-                throw err;
-            }
+    return fs.readFile(filename, 'utf8', (err, data) => {
+        if (err) {
+            throw err;
+        }
 
-            callback(data);
-        });
-    }
-
-    process.stdin.on('data', function (data) {
         callback(data);
     });
 }
 
 function write(html, filename) {
-    if (filename) {
-        return fs.writeFile(filename, html, function (err) {
-            if (err) {
-                throw err;
-            }
-        });
-    }
-
-    process.stdout.write(html + '\n');
+    return fs.writeFile(filename, html + '\n', err => {
+        if (err) {
+            throw err;
+        }
+    });
 }
 
-read(filename, function (data) {
-    cleaner.clean(data, options, function (html) {
+read(filename || process.stdin.fd, data => {
+    cleaner.clean(data, options, html => {
         if (filename && inPlace) {
             return write(html, filename);
         }
 
-        write(html);
+        write(html, process.stdout.fd);
     });
 });
