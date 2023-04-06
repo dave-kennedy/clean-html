@@ -27,9 +27,13 @@ cleaner.clean('<!DOCTYPE html>', function (html) {
     assert.equal(html, '<!DOCTYPE html>')
 });
 
-// test that tag is lowercased
-cleaner.clean('<A HREF="http://foo">bar</A>', function (html) {
-    assert.equal(html, '<a href="http://foo">bar</a>');
+// test that attribute gets empty value when allow-attributes-without-values is false
+cleaner.clean('<input name="foo" disabled>', {'allow-attributes-without-values': false}, function (html) {
+  assert.equal(html, '<input name="foo" disabled="">');
+});
+// test that attribute doesn't get empty value when allow-attributes-without-values is true
+cleaner.clean('<input name="foo" disabled>', {'allow-attributes-without-values': true}, function (html) {
+  assert.equal(html, '<input name="foo" disabled>');
 });
 
 // test that line breaks are not added around comments when break-around-comments is false
@@ -48,6 +52,24 @@ cleaner.clean('foo<div></div>bar', {'break-around-tags': []}, function (html) {
 // test that line breaks are added around tags when included in break-around-tags
 cleaner.clean('foo<div></div>bar', {'break-around-tags': ['div']}, function (html) {
     assert.equal(html, 'foo\n<div></div>\nbar');
+});
+
+// test that tag is lowercased when lower-case-tags is true
+cleaner.clean('<A href="http://foo">bar</A>', {'lower-case-tags': true}, function (html) {
+    assert.equal(html, '<a href="http://foo">bar</a>');
+});
+// test that tag is not lowercased when lower-case-tags is false
+cleaner.clean('<A href="http://foo">bar</A>', {'lower-case-tags': false}, function (html) {
+    assert.equal(html, '<A href="http://foo">bar</A>');
+});
+
+// test that attribute name is lowercased when lower-case-attribute-names is true
+cleaner.clean('<a HREF="http://foo">bar</a>', {'lower-case-attribute-names': true}, function (html) {
+    assert.equal(html, '<a href="http://foo">bar</a>');
+});
+// test that attribute name is not lowercased when lower-case-attribute-names is false
+cleaner.clean('<a HREF="http://foo">bar</a>', {'lower-case-attribute-names': false}, function (html) {
+    assert.equal(html, '<a HREF="http://foo">bar</a>');
 });
 
 // test that attribute is not removed when not included in remove-attributes
