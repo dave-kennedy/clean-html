@@ -62,6 +62,7 @@ function setup(opt) {
             'title',
             'tr'
         ],
+        'decode-entities': false,
         'indent': '  ',
         'lower-case-tags': true,
         'lower-case-attribute-names': true,
@@ -83,7 +84,6 @@ function setup(opt) {
             'center',
             'font'
         ],
-        'replace-nbsp': false,
         'wrap': 120
     };
 
@@ -94,6 +94,7 @@ function setup(opt) {
     options['allow-attributes-without-values'] = opt['allow-attributes-without-values'] === true ? true : false;
     options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
     options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
+    options['decode-entities'] = opt['decode-entities'] === true ? true : false;
     options['indent'] = opt['indent'] || options['indent'];
     options['lower-case-tags'] = opt['lower-case-tags'] === false ? false : true;
     options['lower-case-attribute-names'] = opt['lower-case-attribute-names'] === false ? false : true;
@@ -101,7 +102,6 @@ function setup(opt) {
     options['remove-comments'] = opt['remove-comments'] === true ? true : false;
     options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
     options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
-    options['replace-nbsp'] = opt['replace-nbsp'] === true ? true : false;
     options['wrap'] = opt['wrap'] >= 0 ? opt['wrap'] : options['wrap'];
 
     if (opt['add-break-around-tags']) {
@@ -151,10 +151,6 @@ function breakWithin(node) {
 
 function isEmpty(node) {
     if (node.type == 'text') {
-        if (options['replace-nbsp']) {
-            !node.data.replace(/&nbsp;/g, ' ').trim();
-        }
-
         return !node.data.trim();
     }
 
@@ -199,10 +195,6 @@ function renderText(node) {
     }
 
     var text = removeExtraSpace(node.data);
-
-    if (options['replace-nbsp']) {
-        text = text.replace(/&nbsp;/g, ' ');
-    }
 
     if (!node.prev || breakAround(node.prev)) {
         text = text.trimLeft();
@@ -421,7 +413,7 @@ function clean(html, opt, callback) {
     });
 
     var parserOptions = {
-        decodeEntities: false,
+        decodeEntities: options['decode-entities'],
         lowerCaseTags: options['lower-case-tags'],
         lowerCaseAttributeNames: options['lower-case-attribute-names'],
     };

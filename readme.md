@@ -94,12 +94,11 @@ Sanity restored!
 
 ### allow-attributes-without-values
 
-Allows attributes to be output without values.  For example, `checked` instead
-of `checked=""`.
+Allows attributes to be output without values. For example, `checked` instead of `checked=""`.
 
 Please set to `true` for Angular components or for `<input>` elements.
 
-Type: Boolean
+Type: Boolean  
 Default: `false`
 
 ### break-around-comments
@@ -116,6 +115,13 @@ Tags that should have line breaks added before and after.
 Type: Array  
 Default: `['body', 'blockquote', 'br', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'link', 'meta', 'p', 'table', 'title', 'td', 'tr']`
 
+### decode-entities
+
+Replaces HTML entities with their decoded equivalents. e.g., if `true` then `&nbsp;` will be replaced by a space character.
+
+Type: Boolean  
+Default: `false`
+
 ### indent
 
 The string to use for indentation. e.g., a tab character or one or more spaces.
@@ -129,7 +135,7 @@ Converts all tag names to lower case.
 
 Please set to `false` for Angular components.
 
-Type: Boolean
+Type: Boolean  
 Default: `true`
 
 ### lower-case-attribute-names
@@ -138,7 +144,7 @@ Converts all attribute names to lower case.
 
 Please set to `false` for Angular components.
 
-Type: Boolean
+Type: Boolean  
 Default: `true`
 
 ### remove-attributes
@@ -168,13 +174,6 @@ Tags to always remove from markup. Nested content is preserved.
 
 Type: Mixed Array (strings or RegExp pattern)  
 Default: `['center', 'font']`
-
-### replace-nbsp
-
-Replaces non-breaking white space entities (`&nbsp;`) with regular spaces.
-
-Type: Boolean  
-Default: `false`
 
 ### wrap
 

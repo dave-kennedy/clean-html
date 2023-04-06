@@ -58,6 +58,15 @@ cleaner.clean('foo<div></div>bar', {'break-around-tags': ['div']}, function (htm
     assert.equal(html, 'foo\n<div></div>\nbar');
 });
 
+// test that non-breaking space is not replaced by a single space when decode-entities is false
+cleaner.clean('Foo&nbsp;Bar', {'decode-entities': false}, function (html) {
+    assert.equal(html, 'Foo&nbsp;Bar');
+});
+// test that non-breaking space is replaced by a single space when decode-entities is true
+cleaner.clean('Foo&nbsp;Bar', {'decode-entities': true}, function (html) {
+    assert.equal(html, 'Foo Bar');
+});
+
 // test that tag is lowercased when lower-case-tags is true
 cleaner.clean('<A href="http://foo">bar</A>', {'lower-case-tags': true}, function (html) {
     assert.equal(html, '<a href="http://foo">bar</a>');
@@ -127,15 +136,6 @@ cleaner.clean('<app-test>foo</app-test>', {'remove-tags': [/app-.+/]}, function 
 // test that unsupported tags are removed
 cleaner.clean('<script>foo</script>\n<style>bar</style>', function (html) {
     assert.equal(html, '');
-});
-
-// test that non-breaking space is not replaced by a single space when replace-nbsp is false
-cleaner.clean('Foo&nbsp;Bar', {'replace-nbsp': false}, function (html) {
-    assert.equal(html, 'Foo&nbsp;Bar');
-});
-// test that non-breaking space is replaced by a single space when replace-nbsp is true
-cleaner.clean('Foo&nbsp;Bar', {'replace-nbsp': true}, function (html) {
-    assert.equal(html, 'Foo Bar');
 });
 
 // indent tests
