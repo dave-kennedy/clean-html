@@ -19,18 +19,7 @@ const voidElements = [
     'param',
     'source',
     'track',
-    'wbr',
-
-    // common self closing svg elements
-    'circle',
-    'ellipse',
-    'line',
-    'path',
-    'polygon',
-    'polyline',
-    'rect',
-    'stop',
-    'use'
+    'wbr'
 ];
 
 let options = {};
@@ -65,8 +54,10 @@ function setup(opt) {
         'lower-case-tags': opt['lower-case-tags'] === false ? false : true,
         'lower-case-attribute-names': opt['lower-case-attribute-names'] === false ? false : true,
         'preserve-tags': opt['preserve-tags'] || [
+            'math',
             'script',
-            'style'
+            'style',
+            'svg'
         ],
         'remove-attributes': opt['remove-attributes'] || [
             'align',
