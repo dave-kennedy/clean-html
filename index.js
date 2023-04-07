@@ -161,6 +161,10 @@ function isEmpty(node) {
         return !node.data.trim();
     }
 
+    if (voidElements.includes(node.name)) {
+        return false;
+    }
+
     return !node.children.length || node.children.every(isEmpty);
 }
 

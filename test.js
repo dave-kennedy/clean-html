@@ -249,6 +249,12 @@ test('empty tag is removed when included in remove-empty-tags', () => {
     });
 });
 
+test('non-empty tag is not removed when included in remove-empty-tags', () => {
+    cleaner.clean('<p><img src="foo.jpg"></p>', {'remove-empty-tags': ['p']}, html => {
+        assert.equal(html, '<p><img src="foo.jpg"></p>');
+    });
+});
+
 test('empty tag is removed when it matches at least one pattern included in remove-empty-tags', () => {
     cleaner.clean('<app-pam-pam-pam></app-pam-pam-pam>', {'remove-empty-tags': [/^app-.*/i]}, html => {
         assert.equal(html, '');
