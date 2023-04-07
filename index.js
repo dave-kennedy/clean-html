@@ -37,9 +37,9 @@ let options = {};
 
 function setup(opt) {
     options = {
-        'allow-attributes-without-values': false,
-        'break-around-comments': true,
-        'break-around-tags': [
+        'allow-attributes-without-values': opt['allow-attributes-without-values'] === true ? true : false,
+        'break-around-comments': opt['break-around-comments'] === false ? false : true,
+        'break-around-tags': opt['break-around-tags'] || [
             'blockquote',
             'body',
             'br',
@@ -60,15 +60,15 @@ function setup(opt) {
             'title',
             'tr'
         ],
-        'decode-entities': false,
-        'indent': '  ',
-        'lower-case-tags': true,
-        'lower-case-attribute-names': true,
-        'preserve-tags': [
+        'decode-entities': opt['decode-entities'] === true ? true : false,
+        'indent': opt['indent'] || '  ',
+        'lower-case-tags': opt['lower-case-tags'] === false ? false : true,
+        'lower-case-attribute-names': opt['lower-case-attribute-names'] === false ? false : true,
+        'preserve-tags': opt['preserve-tags'] || [
             'script',
             'style'
         ],
-        'remove-attributes': [
+        'remove-attributes': opt['remove-attributes'] || [
             'align',
             'bgcolor',
             'border',
@@ -80,32 +80,14 @@ function setup(opt) {
             'valign',
             'width'
         ],
-        'remove-comments': false,
-        'remove-empty-tags': [],
-        'remove-tags': [
+        'remove-comments': opt['remove-comments'] === true ? true : false,
+        'remove-empty-tags': opt['remove-empty-tags'] || [],
+        'remove-tags': opt['remove-tags'] || [
             'center',
             'font'
         ],
-        'wrap': 120
+        'wrap': opt['wrap'] >= 0 ? opt['wrap'] : 120
     };
-
-    if (!opt) {
-        return;
-    }
-
-    options['allow-attributes-without-values'] = opt['allow-attributes-without-values'] === true ? true : false;
-    options['break-around-comments'] = opt['break-around-comments'] === false ? false : true;
-    options['break-around-tags'] = opt['break-around-tags'] || options['break-around-tags'];
-    options['decode-entities'] = opt['decode-entities'] === true ? true : false;
-    options['indent'] = opt['indent'] || options['indent'];
-    options['lower-case-tags'] = opt['lower-case-tags'] === false ? false : true;
-    options['lower-case-attribute-names'] = opt['lower-case-attribute-names'] === false ? false : true;
-    options['preserve-tags'] = opt['preserve-tags'] || options['preserve-tags'];
-    options['remove-attributes'] = opt['remove-attributes'] || options['remove-attributes'];
-    options['remove-comments'] = opt['remove-comments'] === true ? true : false;
-    options['remove-empty-tags'] = opt['remove-empty-tags'] || options['remove-empty-tags'];
-    options['remove-tags'] = opt['remove-tags'] || options['remove-tags'];
-    options['wrap'] = opt['wrap'] >= 0 ? opt['wrap'] : options['wrap'];
 
     if (opt['add-break-around-tags']) {
         options['break-around-tags'] = options['break-around-tags'].concat(opt['add-break-around-tags']);
@@ -394,7 +376,7 @@ function clean(html, opt, callback) {
         opt = null;
     }
 
-    setup(opt);
+    setup(opt || {});
 
     const handler = new htmlparser.DomHandler((err, dom) => {
         if (err) {
