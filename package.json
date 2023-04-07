@@ -8,6 +8,14 @@
     "htmlparser2": "^8.0.2",
     "minimist": "^1.2.8"
   },
+  "files": [
+    "cmd.js",
+    "index.js",
+    "package.json",
+    "README.md",
+    "release-notes.md",
+    "UNLICENSE"
+  ],
   "scripts": {
     "test": "node test.js"
   },
