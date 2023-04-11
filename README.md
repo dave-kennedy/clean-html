@@ -1,20 +1,9 @@
 # HTML cleaner and beautifier
 
-[![NPM Stats](https://nodei.co/npm/clean-html.png?downloads=true&downloadRank=true)](https://npmjs.org/packages/clean-html/)
-
-## Installation
-
-Install locally with npm:
-
-```
-$ npm install clean-html
-```
-
-Or globally:
-
-```
-$ npm install -g clean-html
-```
+![npm](https://img.shields.io/npm/v/clean-html)
+![npm](https://img.shields.io/npm/dw/clean-html)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/dave-kennedy/clean-html)
+![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/dave-kennedy/clean-html)
 
 ## Usage
 
